@@ -53,7 +53,7 @@ export default {
     handleSubmit(name) {
       let user = this.user
       let router = this.$router
-      this.login({user, router})
+      this.login(user)
     }
   },
   computed: {
