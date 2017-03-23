@@ -51,7 +51,9 @@ export default {
   methods: {
     ...mapActions(['login']),
     handleSubmit(name) {
-      this.login(this.user)
+      let user = this.user
+      let router = this.$router
+      this.login({user, router})
     }
   },
   computed: {
@@ -62,7 +64,7 @@ export default {
 
 <style scoped>
 .login_form {
-  margin: 0 auto;
+  margin: 160px auto 0;
   width: 400px;
 }
 h1 {
