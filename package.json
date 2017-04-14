@@ -13,6 +13,7 @@
     "axios": "^0.15.3",
     "eslint-config-standard": "^7.1.0",
     "iview": "^2.0.0-rc.6",
+    "qs": "^6.4.0",
     "vue": "^2.2.2",
     "vue-router": "^2.2.0",
     "vuex": "^2.2.1",

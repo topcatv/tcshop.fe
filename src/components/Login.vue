@@ -13,7 +13,7 @@
             slot="prepend"></Icon>
       </Input>
     </Form-item>
-    <Form-item prop="password" label="用户名">
+    <Form-item prop="password" label="密码">
       <Input type="password"
              v-model="user.password"
              placeholder="密码">
@@ -21,9 +21,18 @@
             slot="prepend"></Icon>
       </Input>
     </Form-item>
+    <Form-item prop="captcha" label="验证码">
+      <Input type="text"
+             v-model="user.captcha"
+             placeholder="验证码">
+      <Icon type="locked"
+            slot="prepend"></Icon>
+      </Input>
+    </Form-item>
+    <Alert v-if="warn" type="warning" show-icon>{{warn}}</Alert>
+    <img src="/api/images/kaptcha.jpg" style="width: 100px; height: 80px"/>
     <Form-item>
-      <Button type="primary"
-              @click="handleSubmit('userForm')">登录</Button>
+      <Button type="primary" @click="handleSubmit('userForm')">登录</Button>
     </Form-item>
   </Form>
 </template>
@@ -57,7 +66,9 @@ export default {
     }
   },
   computed: {
-    ...mapState(['isLogin', 'isLoading'])
+    ...mapState({
+      warn: 'warn'
+    })
   }
 }
 </script>

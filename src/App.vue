@@ -73,7 +73,10 @@ export default {
     }
   },
   computed: {
-    ...mapState(['isLoading', 'isLogin']),
+    ...mapState({
+      isLoading: 'isLoading',
+      isLogin: 'isLogin'
+    }),
     iconSize() {
       return this.spanLeft === 5 ? 14 : 24
     }
