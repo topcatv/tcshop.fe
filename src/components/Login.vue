@@ -60,9 +60,12 @@ export default {
   methods: {
     ...mapActions(['login']),
     handleSubmit(name) {
-      let user = this.user
-      let router = this.$router
-      this.login(user)
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+          let user = this.user
+          this.login(user)
+        }
+      })
     }
   },
   computed: {
