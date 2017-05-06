@@ -28,10 +28,10 @@ export default {
       payload,
     }, { call, put }) {
       const data = yield call(query, parse(payload))
-      if (data.success && data.user) {
+      if (data.success && data.data) {
         yield put({
           type: 'queryUserSuccess',
-          payload: data.user,
+          payload: data.data,
         })
         if (location.pathname === '/login') {
           yield put(routerRedux.push('/dashboard'))

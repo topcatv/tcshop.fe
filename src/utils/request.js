@@ -7,6 +7,7 @@ import pathToRegexp from 'path-to-regexp'
 import { message } from 'antd'
 
 axios.defaults.baseURL = baseURL
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 
 const fetch = (options) => {
   let {

@@ -14,7 +14,14 @@ export default {
           "dva-hmr",
           "transform-runtime",
   		    ["import", { "libraryName": "antd", "style": true }]
-        ]
+        ],
+        "proxy": {
+          "/api/dev": {
+            "target": "http://localhost:8080/",
+            "changeOrigin": true,
+            "pathRewrite": { "^/api/dev" : "" }
+          }
+        }
       },
       "production": {
         "extraBabelPlugins": [
