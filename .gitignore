@@ -4,3 +4,4 @@ yarn.lock
 npm-debug.log
 .vscode
 .idea
+.DS_Store
