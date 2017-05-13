@@ -1,5 +1,4 @@
-import { create, remove, update } from '../services/user'
-import { query } from '../services/users'
+import { query, create, remove, update } from '../services/user'
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
 

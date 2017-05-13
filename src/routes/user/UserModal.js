@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, InputNumber, Radio, Modal, Cascader } from 'antd'
-import city from '../../utils/city'
+import { Form, Input, Modal } from 'antd'
 
 const FormItem = Form.Item
 
@@ -40,8 +39,29 @@ const modal = ({
     })
   }
 
+  function handleConfirmBlur (e) {
+    const value = e.target.value
+    this.setState({ confirmDirty: this.state.confirmDirty || !!value })
+  }
+  function checkPassword (rule, value, callback) {
+    const form = this.props.form
+    if (value && value !== form.getFieldValue('password')) {
+      callback('Two passwords that you enter is inconsistent!')
+    } else {
+      callback()
+    }
+  }
+  function checkConfirm (rule, value, callback) {
+    console.log(this)
+    const form = this.props.form
+    if (value && this.state.confirmDirty) {
+      form.validateFields(['confirm'], { force: true })
+    }
+    callback()
+  }
+
   const modalOpts = {
-    title: `${type === 'create' ? 'Create User' : 'Update User'}`,
+    title: `${type === 'create' ? '新建用户' : '更新用户'}`,
     visible,
     onOk: handleOk,
     onCancel,
@@ -51,89 +71,55 @@ const modal = ({
   return (
     <Modal {...modalOpts}>
       <Form layout="horizontal">
-        <FormItem label="Name" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('name', {
-            initialValue: item.name,
+        <FormItem label="用户名" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('userName', {
+            initialValue: item.userName,
             rules: [
               {
                 required: true,
+                message: '请输入用户名',
               },
             ],
           })(<Input />)}
         </FormItem>
-        <FormItem label="NickName" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('nickName', {
-            initialValue: item.nickName,
+        <FormItem label="用户账号" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('loginName', {
+            initialValue: item.loginName,
             rules: [
               {
                 required: true,
+                message: '请输入用户账号',
               },
             ],
           })(<Input />)}
         </FormItem>
-        <FormItem label="Gender" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('isMale', {
-            initialValue: item.isMale,
+        <FormItem label="密码" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('password', {
             rules: [
               {
                 required: true,
-                type: 'boolean',
+                message: '请输入密码',
+              }, {
+                validator: checkConfirm,
               },
             ],
           })(
-            <Radio.Group>
-              <Radio value>Male</Radio>
-              <Radio value={false}>Female</Radio>
-            </Radio.Group>
+            <Input type="password" />
           )}
         </FormItem>
-        <FormItem label="Age" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('age', {
-            initialValue: item.age,
+        <FormItem label="确认密码" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('confirm', {
             rules: [
               {
                 required: true,
-                type: 'number',
+                message: '请输入确认密码',
+              }, {
+                validator: checkPassword,
               },
             ],
-          })(<InputNumber min={18} max={100} />)}
-        </FormItem>
-        <FormItem label="Phone" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('phone', {
-            initialValue: item.phone,
-            rules: [
-              {
-                required: true,
-                pattern: /^1[34578]\d{9}$/,
-              },
-            ],
-          })(<Input />)}
-        </FormItem>
-        <FormItem label="Email" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('email', {
-            initialValue: item.email,
-            rules: [
-              {
-                required: true,
-                pattern: /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/,
-              },
-            ],
-          })(<Input />)}
-        </FormItem>
-        <FormItem label="Address" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('address', {
-            initialValue: item.address && item.address.split(' '),
-            rules: [
-              {
-                required: true,
-              },
-            ],
-          })(<Cascader
-            size="large"
-            style={{ width: '100%' }}
-            options={city}
-            placeholder="Pick an address"
-          />)}
+          })(
+            <Input type="password" onBlur={handleConfirmBlur} />
+          )}
         </FormItem>
       </Form>
     </Modal>

@@ -25,51 +25,25 @@ function list ({ loading, dataSource, pagination, onPageChange, onDeleteItem, on
 
   const columns = [
     {
-      title: 'Avatar',
-      dataIndex: 'avatar',
-      key: 'avatar',
-      width: 64,
-      className: styles.avatar,
-      render: (text) => <img alt={'avatar'} width={24} src={text} />,
-    }, {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: '用户名',
+      dataIndex: 'userName',
+      key: 'userName',
       render: (text, record) => <Link to={`user/${record.id}`}>{text}</Link>,
     }, {
-      title: 'NickName',
-      dataIndex: 'nickName',
-      key: 'nickName',
+      title: '登陆账号',
+      dataIndex: 'loginName',
+      key: 'loginName',
     }, {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
+      title: '注册时间',
+      dataIndex: 'registerDate',
+      key: 'registerDate',
     }, {
-      title: 'Gender',
-      dataIndex: 'isMale',
-      key: 'isMale',
-      render: (text) => <span>{text
-            ? 'Male'
-            : 'Female'}</span>,
+      title: '最后一次登陆时间',
+      dataIndex: 'lastLoginTime',
+      key: 'lastLoginTime',
     }, {
-      title: 'Phone',
-      dataIndex: 'phone',
-      key: 'phone',
-    }, {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
-    }, {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
-    }, {
-      title: 'CreateTime',
-      dataIndex: 'createTime',
-      key: 'createTime',
-    }, {
-      title: 'Operation',
-      key: 'operation',
+      title: '操作',
+      key: 'password',
       width: 100,
       render: (text, record) => {
         return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: '编辑' }, { key: '2', name: '删除' }]} />

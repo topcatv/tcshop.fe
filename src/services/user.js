@@ -4,9 +4,16 @@ const { user } = api
 
 export async function query (params) {
   return request({
-    url: user,
-    method: 'get',
+    url: user.replace('/:id', ''),
+    method: 'post',
     data: params,
+  })
+}
+
+export async function get (params) {
+  return request({
+    url: user.replace('/:id', `/${params.id}`),
+    method: 'get',
   })
 }
 
@@ -20,9 +27,8 @@ export async function create (params) {
 
 export async function remove (params) {
   return request({
-    url: user,
+    url: user.replace('/:id', `/${params.id}`),
     method: 'delete',
-    data: params,
   })
 }
 

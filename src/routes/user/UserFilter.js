@@ -109,7 +109,7 @@ const UserFilter = ({
           </div>
           <div>
             <Switch style={{ marginRight: 16 }} size="large" defaultChecked={isMotion} onChange={switchIsMotion} checkedChildren={'Motion'} unCheckedChildren={'Motion'} />
-            <Button size="large" type="ghost" onClick={onAdd}>Create</Button>
+            <Button size="large" type="ghost" onClick={onAdd}>创建</Button>
           </div>
         </div>
       </Col>
