@@ -12,6 +12,7 @@ const formItemLayout = {
     span: 14,
   },
 }
+let confirmDirty = false
 
 const modal = ({
   visible,
@@ -23,6 +24,7 @@ const modal = ({
     getFieldDecorator,
     validateFields,
     getFieldsValue,
+    getFieldValue,
   },
 }) => {
   function handleOk () {
@@ -34,28 +36,25 @@ const modal = ({
         ...getFieldsValue(),
         key: item.key,
       }
-      data.address = data.address.join(' ')
       onOk(data)
     })
   }
 
-  function handleConfirmBlur (e) {
+  const handleConfirmBlur = (e) => {
     const value = e.target.value
-    this.setState({ confirmDirty: this.state.confirmDirty || !!value })
+    confirmDirty = confirmDirty || !!value
   }
-  function checkPassword (rule, value, callback) {
-    const form = this.props.form
-    if (value && value !== form.getFieldValue('password')) {
-      callback('Two passwords that you enter is inconsistent!')
+
+  const checkPassword = (rule, value, callback) => {
+    if (value && value !== getFieldValue('password')) {
+      callback('两次输入的密码不一致')
     } else {
       callback()
     }
   }
-  function checkConfirm (rule, value, callback) {
-    console.log(this)
-    const form = this.props.form
-    if (value && this.state.confirmDirty) {
-      form.validateFields(['confirm'], { force: true })
+  const checkConfirm = (rule, value, callback) => {
+    if (value && confirmDirty) {
+      validateFields(['confirm'], { force: true })
     }
     callback()
   }

@@ -44,7 +44,6 @@ const UserFilter = ({
   const handleSubmit = () => {
     let fields = getFieldsValue()
     fields = handleFields(fields)
-    console.log(fields)
     onFilterChange(fields)
   }
 

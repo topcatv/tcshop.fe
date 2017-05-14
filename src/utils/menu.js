@@ -8,7 +8,7 @@ module.exports = [
   {
     id: 2,
     bpid: 1,
-    name: 'User Manage',
+    name: '用户管理',
     icon: 'user',
     router: '/user',
   },
@@ -16,7 +16,7 @@ module.exports = [
     id: 21,
     mpid: -1,
     bpid: 2,
-    name: 'User Detail',
+    name: '用户详情',
     router: '/user/:id',
   },
   {

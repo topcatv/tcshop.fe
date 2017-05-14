@@ -19,7 +19,7 @@ export async function get (params) {
 
 export async function create (params) {
   return request({
-    url: user.replace('/:id', ''),
+    url: user.replace('/:id', '/add'),
     method: 'post',
     data: params,
   })

@@ -62,14 +62,11 @@ function list ({ loading, dataSource, pagination, onPageChange, onDeleteItem, on
     <div>
       <Table
         className={classnames({ [styles.table]: true, [styles.motion]: isMotion })}
-        bordered
-        scroll={{ x: 1200 }}
         columns={columns}
         dataSource={dataSource}
         loading={loading}
         onChange={onPageChange}
         pagination={pagination}
-        simple
         rowKey={record => record.id}
         getBodyWrapper={getBodyWrapper}
       />

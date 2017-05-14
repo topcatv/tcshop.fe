@@ -4,7 +4,7 @@ import { YQL, CORS, baseURL } from './config'
 import jsonp from 'jsonp'
 import lodash from 'lodash'
 import pathToRegexp from 'path-to-regexp'
-import { message } from 'antd'
+import { message, Modal } from 'antd'
 
 axios.defaults.baseURL = baseURL
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
@@ -107,6 +107,16 @@ export default function request (options) {
       const { data, statusText } = response
       otherData = data
       status = response.status
+      const match = pathToRegexp.parse(window.location.href)
+      if (status === 401 && match.length >= 3 && !match[2].startsWith('/login')) {
+        Modal.warning({
+          title: '登录超时',
+          content: '系统将跳转到登录页重新登录',
+          onOk () {
+            window.location.href = window.location.href
+          },
+        })
+      }
       msg = data.message || statusText
     } else {
       status = 600
