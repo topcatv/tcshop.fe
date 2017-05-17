@@ -12,6 +12,7 @@ module.exports = {
   api: {
     userLogin: '/login',
     userLogout: '/logout',
+    currentUser: '/current_user',
     userInfo: '/userInfo',
     user: '/user/:id',
     dashboard: '/dashboard',

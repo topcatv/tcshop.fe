@@ -15,7 +15,7 @@ function list ({ loading, dataSource, pagination, onPageChange, onDeleteItem, on
       onEditItem(record)
     } else if (e.key === '2') {
       confirm({
-        title: 'Are you sure delete this record?',
+        title: '确定要删除吗?',
         onOk () {
           onDeleteItem(record.id)
         },

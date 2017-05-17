@@ -59,6 +59,26 @@ const modal = ({
     callback()
   }
 
+  const passwordRequire = (isRequire) => {
+    let rule = [{
+      required: true,
+      message: '请输入密码',
+    }, {
+      validator: checkConfirm,
+    }]
+    return isRequire ? rule : []
+  }
+
+  const confirmRequire = (isRequire) => {
+    let rule = [{
+      required: true,
+      message: '请输入确认密码',
+    }, {
+      validator: checkPassword,
+    }]
+    return isRequire ? rule : []
+  }
+
   const modalOpts = {
     title: `${type === 'create' ? '新建用户' : '更新用户'}`,
     visible,
@@ -94,28 +114,14 @@ const modal = ({
         </FormItem>
         <FormItem label="密码" hasFeedback {...formItemLayout}>
           {getFieldDecorator('password', {
-            rules: [
-              {
-                required: true,
-                message: '请输入密码',
-              }, {
-                validator: checkConfirm,
-              },
-            ],
+            rules: passwordRequire(type === 'create'),
           })(
             <Input type="password" />
           )}
         </FormItem>
         <FormItem label="确认密码" hasFeedback {...formItemLayout}>
           {getFieldDecorator('confirm', {
-            rules: [
-              {
-                required: true,
-                message: '请输入确认密码',
-              }, {
-                validator: checkPassword,
-              },
-            ],
+            rules: confirmRequire(type === 'create'),
           })(
             <Input type="password" onBlur={handleConfirmBlur} />
           )}
