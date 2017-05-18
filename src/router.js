@@ -54,6 +54,31 @@ const Routers = function ({ history, app }) {
             }, 'login')
           },
         }, {
+          path: 'role',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/role'))
+              cb(null, require('./routes/role/'))
+            }, 'role')
+          },
+        }, {
+          path: 'role/edit',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/role/detail'))
+              cb(null, require('./routes/role/edit/'))
+            }, 'role-edit')
+          },
+        }, {
+          path: 'role/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/role/detail'))
+              cb(null, require('./routes/role/detail/'))
+            }, 'role-detail')
+          },
+        },
+      /* {
           path: 'request',
           getComponent (nextState, cb) {
             require.ensure([], require => {
@@ -123,7 +148,8 @@ const Routers = function ({ history, app }) {
               cb(null, require('./routes/chart/areaChart/'))
             }, 'chart-areaChart')
           },
-        }, {
+        },*/
+        {
           path: '*',
           getComponent (nextState, cb) {
             require.ensure([], require => {
@@ -135,7 +161,7 @@ const Routers = function ({ history, app }) {
     },
   ]
 
-  return <Router history={history} routes={routes} />
+  return <Router history={history} routes={routes} />;
 }
 
 Routers.propTypes = {

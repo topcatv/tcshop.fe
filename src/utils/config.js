@@ -15,6 +15,7 @@ module.exports = {
     currentUser: '/current_user',
     userInfo: '/userInfo',
     user: '/user/:id',
+    role: '/role/:id',
     dashboard: '/dashboard',
   },
 }
