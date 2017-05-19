@@ -1,6 +1,6 @@
 import { request, config } from '../utils'
 const { api } = config
-const { role } = api
+const { role, permission } = api
 
 export async function query (params) {
   return request({
@@ -37,5 +37,12 @@ export async function update (params) {
     url: role,
     method: 'patch',
     data: params,
+  })
+}
+
+export async function getAllPermission () {
+  return request({
+    url: permission.replace('/:id', ''),
+    method: 'get',
   })
 }

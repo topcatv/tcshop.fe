@@ -64,13 +64,7 @@ const Role = ({ location, dispatch, role, loading }) => {
       })
     },
     onEditItem (item) {
-      dispatch({
-        type: 'role/showModal',
-        payload: {
-          modalType: 'update',
-          currentItem: item,
-        },
-      })
+      dispatch(routerRedux.push(`role/edit/${item.id}`))
     },
   }
 

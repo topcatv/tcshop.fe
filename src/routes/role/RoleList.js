@@ -25,15 +25,17 @@ function list ({ loading, dataSource, pagination, onPageChange, onDeleteItem, on
       title: '角色名',
       dataIndex: 'name',
       key: 'name',
-      render: (text, record) => <Link to={`user/${record.id}`}>{text}</Link>,
+      render: (text, record) => <Link to={`role/${record.id}`}>{text}</Link>,
     }, {
       title: '权限',
       dataIndex: 'permissions',
       key: 'permissions',
       render: (text, record) => {
-        record.permissions.forEach((p) => {
-          return <span>{p}</span>
-        })
+        if (record.permissions) {
+          record.permissions.forEach((p) => {
+            return <span>{p}</span>
+          })
+        }
       },
     }, {
       title: '操作',

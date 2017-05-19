@@ -1,19 +1,29 @@
 import pathToRegexp from 'path-to-regexp'
-import { get } from '../../services/role'
+import { routerRedux } from 'dva/router'
+import { get, create, getAllPermission } from '../../services/role'
 
 export default {
 
   namespace: 'roleDetail',
 
   state: {
-    data: {},
+    item: {},
+    allPermission: [],
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen(() => {
-        const match = pathToRegexp('/role/:id').exec(location.pathname)
-        if (match && match[1] !== 'edit') {
+        let match = pathToRegexp('/role/:id').exec(location.pathname)
+        if (match) {
+          let type = 'query'
+          if (match[1] === 'edit') {
+            type = 'loadAllPermission'
+          }
+          dispatch({ type, payload: { id: match[1] } })
+        }
+        match = pathToRegexp('/role/edit/:id').exec(location.pathname)
+        if (match) {
           dispatch({ type: 'query', payload: { id: match[1] } })
         }
       })
@@ -25,14 +35,40 @@ export default {
       payload,
     }, { call, put }) {
       const data = yield call(get, payload)
+      const permissionsData = yield call(getAllPermission)
       const { success, message, status, ...other } = data
       if (success) {
         yield put({
           type: 'querySuccess',
           payload: {
-            data: other.data,
+            item: other.data,
+            allPermission: permissionsData.data,
           },
         })
+      } else {
+        throw data
+      }
+    },
+    *loadAllPermission ({
+      payload,
+    }, { call, put }) {
+      const data = yield call(getAllPermission)
+      const { success, message, status, ...other } = data
+      if (success) {
+        yield put({
+          type: 'allPermission',
+          payload: {
+            allPermission: other.data,
+          },
+        })
+      } else {
+        throw data
+      }
+    },
+    *create ({ payload }, { call, put }) {
+      const data = yield call(create, payload)
+      if (data.success) {
+        yield put(routerRedux.goBack())
       } else {
         throw data
       }
@@ -41,10 +77,18 @@ export default {
 
   reducers: {
     querySuccess (state, { payload }) {
-      const { data } = payload
+      const { item, allPermission } = payload
       return {
         ...state,
-        data,
+        item,
+        allPermission,
+      }
+    },
+    allPermission (state, { payload }) {
+      const { allPermission } = payload
+      return {
+        ...state,
+        allPermission,
       }
     },
   },

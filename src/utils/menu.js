@@ -34,6 +34,20 @@ module.exports = [
     router: '/role/edit',
   },
   {
+    id: 32,
+    mpid: -1,
+    bpid: 3,
+    name: '角色详情',
+    router: '/role/:id',
+  },
+  {
+    id: 33,
+    mpid: -1,
+    bpid: 3,
+    name: '角色编辑',
+    router: '/role/edit/:id',
+  },
+  {
     id: 4,
     bpid: 1,
     name: '商品管理',

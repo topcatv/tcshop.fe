@@ -1,4 +1,4 @@
-import { query, create, remove, update } from '../../services/role'
+import { query, create, remove, update, get } from '../../services/role'
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
 
@@ -9,6 +9,7 @@ export default {
   state: {
     list: [],
     currentItem: {},
+    allPermissions: [],
     modalVisible: false,
     modalType: 'create',
     isMotion: true,
@@ -66,7 +67,6 @@ export default {
       }
     },
     *create ({ payload }, { call, put }) {
-      yield put({ type: 'hideModal' })
       const data = yield call(create, payload)
       if (data.success) {
         yield put({ type: 'requery' })
@@ -75,7 +75,6 @@ export default {
       }
     },
     *update ({ payload }, { select, call, put }) {
-      yield put({ type: 'hideModal' })
       const id = yield select(({ user }) => user.currentItem.id)
       const newUser = { ...payload, id }
       const data = yield call(update, newUser)
@@ -84,6 +83,9 @@ export default {
       } else {
         throw data
       }
+    },
+    *edit ({ payload }, { call, put }) {
+      const data = yield call(get, payload)
     },
   },
 
@@ -96,12 +98,6 @@ export default {
           ...state.pagination,
           ...pagination,
         } }
-    },
-    showModal (state, action) {
-      return { ...state, ...action.payload, modalVisible: true }
-    },
-    hideModal (state) {
-      return { ...state, modalVisible: false }
     },
   },
 

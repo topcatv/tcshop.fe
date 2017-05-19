@@ -16,6 +16,7 @@ module.exports = {
     userInfo: '/userInfo',
     user: '/user/:id',
     role: '/role/:id',
+    permission: '/permission/:id',
     dashboard: '/dashboard',
   },
 }

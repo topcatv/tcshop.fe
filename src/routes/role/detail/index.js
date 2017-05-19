@@ -3,15 +3,14 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import styles from './index.less'
 
-const Detail = ({ userDetail }) => {
-  console.log(userDetail)
-  const { data } = userDetail
+const Detail = ({ roleDetail }) => {
+  const { item } = roleDetail
   const content = []
-  for (let key in data) {
-    if ({}.hasOwnProperty.call(data, key)) {
+  for (let key in item) {
+    if ({}.hasOwnProperty.call(item, key)) {
       content.push(<div key={key} className={styles.item}>
         <div>{key}</div>
-        <div>{String(data[key])}</div>
+        <div>{String(item[key])}</div>
       </div>)
     }
   }
@@ -23,8 +22,7 @@ const Detail = ({ userDetail }) => {
 }
 
 Detail.propTypes = {
-  userDetail: PropTypes.object,
-  loading: PropTypes.bool,
+  roleDetail: PropTypes.object,
 }
 
-export default connect(({ userDetail, loading }) => ({ userDetail, loading: loading.models.userDetail }))(Detail)
+export default connect(({ roleDetail }) => ({ roleDetail }))(Detail)

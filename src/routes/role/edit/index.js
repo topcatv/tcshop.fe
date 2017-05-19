@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
-import { Form, Input, Row, Col, Button, Modal } from 'antd'
+import { Form, Input, Row, Col, Button, Modal, Transfer } from 'antd'
 
 const FormItem = Form.Item
 const confirm = Modal.confirm
@@ -17,7 +17,7 @@ const formItemLayout = {
 }
 
 const RoleEdit = ({
-  item = {},
+  roleDetail,
   dispatch,
   form: {
     getFieldDecorator,
@@ -25,6 +25,12 @@ const RoleEdit = ({
     getFieldsValue,
   },
 }) => {
+  const { item, allPermission } = roleDetail
+
+  const permissions = allPermission.map((e) => {
+    return { key: `${e.id}`, title: e.permission, description: e.permission, disable: false }
+  })
+
   function handleOk () {
     validateFields((errors) => {
       if (errors) {
@@ -32,9 +38,14 @@ const RoleEdit = ({
       }
       const data = {
         ...getFieldsValue(),
-        key: item.key,
+        id: item.id,
       }
-      console.log(data)
+      dispatch({
+        type: 'roleDetail/create',
+        payload: {
+          ...data,
+        },
+      })
     })
   }
 
@@ -61,6 +72,25 @@ const RoleEdit = ({
             ],
           })(<Input />)}
         </FormItem>
+        <FormItem label="权限" {...formItemLayout}>
+          {getFieldDecorator('permissions', {
+            initialValue: item.permissions,
+            valuePropName: 'targetKeys',
+            rules: [
+              {
+                required: true,
+                message: '请选择权限',
+              },
+            ],
+          })(
+            <Transfer
+              titles={['待选', '已选']}
+              dataSource={permissions}
+              render={p => p.title}
+              notFoundContent={'暂无数据'}
+            />
+          )}
+        </FormItem>
         <Row>
           <Col span={24} style={{ textAlign: 'right' }}>
             <Button type="primary" onClick={handleOk}>提交</Button>
@@ -74,9 +104,9 @@ const RoleEdit = ({
 
 RoleEdit.propTypes = {
   form: PropTypes.object.isRequired,
-  item: PropTypes.object,
+  roleDetail: PropTypes.object,
   dispatch: PropTypes.func,
 }
 const RoleEditForm = Form.create()(RoleEdit)
 
-export default connect(({ role }) => ({ role }))(RoleEditForm)
+export default connect(({ roleDetail }) => ({ roleDetail }))(RoleEditForm)

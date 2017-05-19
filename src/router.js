@@ -62,7 +62,7 @@ const Routers = function ({ history, app }) {
             }, 'role')
           },
         }, {
-          path: 'role/edit',
+          path: 'role/edit/:id',
           getComponent (nextState, cb) {
             require.ensure([], require => {
               registerModel(app, require('./models/role/detail'))
