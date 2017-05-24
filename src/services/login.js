@@ -1,5 +1,5 @@
-import { request, config } from '../utils'
 import qs from 'qs'
+import { request, config } from '../utils'
 const { api } = config
 const { userLogin } = api
 

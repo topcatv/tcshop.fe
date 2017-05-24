@@ -10,11 +10,11 @@ export async function login (params) {
   })
 }
 
-export async function logout () {
+export async function logout (params) {
   return request({
     url: userLogout,
     method: 'get',
-    // data: params,
+    data: params,
   })
 }
 

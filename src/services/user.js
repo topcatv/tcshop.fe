@@ -4,22 +4,15 @@ const { user } = api
 
 export async function query (params) {
   return request({
-    url: user.replace('/:id', ''),
+    url: user,
     method: 'get',
     data: params,
   })
 }
 
-export async function get (params) {
-  return request({
-    url: user.replace('/:id', `/${params.id}`),
-    method: 'get',
-  })
-}
-
 export async function create (params) {
   return request({
-    url: user.replace('/:id', '/add'),
+    url: user.replace('/:id', ''),
     method: 'post',
     data: params,
   })
@@ -27,8 +20,9 @@ export async function create (params) {
 
 export async function remove (params) {
   return request({
-    url: user.replace('/:id', `/${params.id}`),
+    url: user,
     method: 'delete',
+    data: params,
   })
 }
 

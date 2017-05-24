@@ -1,5 +1,5 @@
 import pathToRegexp from 'path-to-regexp'
-import { get } from '../../services/user'
+import { query } from '../../services/user'
 
 export default {
 
@@ -24,13 +24,13 @@ export default {
     *query ({
       payload,
     }, { call, put }) {
-      const data = yield call(get, payload)
+      const data = yield call(query, payload)
       const { success, message, status, ...other } = data
       if (success) {
         yield put({
           type: 'querySuccess',
           payload: {
-            data: other.data,
+            data: other,
           },
         })
       } else {

@@ -1,6 +1,7 @@
-import { query, create, remove, update, get } from '../../services/role'
+import { query, create, remove, update } from '../../services/role'
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
+import { message } from 'antd'
 
 export default {
 
@@ -61,6 +62,7 @@ export default {
     *'delete' ({ payload }, { call, put }) {
       const data = yield call(remove, { id: payload })
       if (data.success) {
+        message.success('删除成功.')
         yield put({ type: 'requery' })
       } else {
         throw data
@@ -84,9 +86,9 @@ export default {
         throw data
       }
     },
-    *edit ({ payload }, { call, put }) {
-      const data = yield call(get, payload)
-    },
+    // *edit ({ payload }, { call, put }) {
+    //   const data = yield call(get, payload)
+    // },
   },
 
   reducers: {

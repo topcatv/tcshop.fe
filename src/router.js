@@ -78,7 +78,7 @@ const Routers = function ({ history, app }) {
             }, 'role-detail')
           },
         },
-      /* {
+        /* , {
           path: 'request',
           getComponent (nextState, cb) {
             require.ensure([], require => {
@@ -148,7 +148,7 @@ const Routers = function ({ history, app }) {
               cb(null, require('./routes/chart/areaChart/'))
             }, 'chart-areaChart')
           },
-        },*/
+        }, */
         {
           path: '*',
           getComponent (nextState, cb) {
@@ -161,7 +161,7 @@ const Routers = function ({ history, app }) {
     },
   ]
 
-  return <Router history={history} routes={routes} />;
+  return <Router history={history} routes={routes} />
 }
 
 Routers.propTypes = {

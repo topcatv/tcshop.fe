@@ -15,19 +15,17 @@ const formItemLayout = {
 let confirmDirty = false
 
 const modal = ({
-  visible,
-  type,
   item = {},
   onOk,
-  onCancel,
   form: {
     getFieldDecorator,
     validateFields,
     getFieldsValue,
     getFieldValue,
   },
+  ...modalProps
 }) => {
-  function handleOk () {
+  const handleOk = () => {
     validateFields((errors) => {
       if (errors) {
         return
@@ -38,6 +36,11 @@ const modal = ({
       }
       onOk(data)
     })
+  }
+
+  const modalOpts = {
+    ...modalProps,
+    onOk: handleOk,
   }
 
   const handleConfirmBlur = (e) => {
@@ -79,14 +82,6 @@ const modal = ({
     return isRequire ? rule : []
   }
 
-  const modalOpts = {
-    title: `${type === 'create' ? '新建用户' : '更新用户'}`,
-    visible,
-    onOk: handleOk,
-    onCancel,
-    wrapClassName: 'vertical-center-modal',
-  }
-
   return (
     <Modal {...modalOpts}>
       <Form layout="horizontal">
@@ -114,14 +109,14 @@ const modal = ({
         </FormItem>
         <FormItem label="密码" hasFeedback {...formItemLayout}>
           {getFieldDecorator('password', {
-            rules: passwordRequire(type === 'create'),
+            rules: passwordRequire(modalOpts.title === 'Create User'),
           })(
             <Input type="password" />
           )}
         </FormItem>
         <FormItem label="确认密码" hasFeedback {...formItemLayout}>
           {getFieldDecorator('confirm', {
-            rules: confirmRequire(type === 'create'),
+            rules: confirmRequire(modalOpts.title === 'Update User'),
           })(
             <Input type="password" onBlur={handleConfirmBlur} />
           )}
@@ -133,10 +128,8 @@ const modal = ({
 
 modal.propTypes = {
   form: PropTypes.object.isRequired,
-  visible: PropTypes.bool,
   type: PropTypes.string,
   item: PropTypes.object,
-  onCancel: PropTypes.func,
   onOk: PropTypes.func,
 }
 

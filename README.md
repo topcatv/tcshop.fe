@@ -87,6 +87,7 @@
 进入目录安装依赖:
 
     npm i 或者 yarn install
+    npm i roadhog@0.6.0-beta.6 -g
 
 开发：
 

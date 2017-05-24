@@ -5,12 +5,24 @@ import { Layout } from '../components'
 import { classnames, config, menu } from '../utils'
 import { Helmet } from 'react-helmet'
 import '../themes/index.less'
+import './app.less'
+import NProgress from 'nprogress'
 const { prefix } = config
 
 const { Header, Bread, Footer, Sider, styles } = Layout
+let lastHref
 
-const App = ({ children, location, dispatch, app }) => {
+const App = ({ children, location, dispatch, app, loading }) => {
   const { user, siderFold, darkTheme, isNavbar, menuPopoverVisible, navOpenKeys } = app
+  const href = window.location.href
+
+  if (lastHref !== href) {
+    NProgress.start()
+    if (!loading.global) {
+      NProgress.done()
+      lastHref = href
+    }
+  }
 
   const headerProps = {
     menu,
@@ -41,7 +53,7 @@ const App = ({ children, location, dispatch, app }) => {
     location,
     navOpenKeys,
     changeTheme () {
-      dispatch({ type: 'app/changeTheme' })
+      dispatch({ type: 'app/switchTheme' })
     },
     changeOpenKeys (openKeys) {
       localStorage.setItem(`${prefix}navOpenKeys`, JSON.stringify(openKeys))
@@ -57,13 +69,16 @@ const App = ({ children, location, dispatch, app }) => {
     return <div>{children}</div>
   }
 
+  const { iconFontJS, iconFontCSS, logo } = config
+
   return (
     <div>
       <Helmet>
         <title>ANTD ADMIN</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" href={config.logoSrc} type="image/x-icon" />
-        {config.iconFontUrl ? <script src={config.iconFontUrl}></script> : ''}
+        <link rel="icon" href={logo} type="image/x-icon" />
+        {iconFontJS && <script src={iconFontJS}></script>}
+        {iconFontCSS && <link rel="stylesheet" href={iconFontCSS} />}
       </Helmet>
       <div className={classnames(styles.layout, { [styles.fold]: isNavbar ? false : siderFold }, { [styles.withnavbar]: isNavbar })}>
         {!isNavbar ? <aside className={classnames(styles.sider, { [styles.light]: !darkTheme })}>
@@ -89,6 +104,7 @@ App.propTypes = {
   location: PropTypes.object,
   dispatch: PropTypes.func,
   app: PropTypes.object,
+  loading: PropTypes.object,
 }
 
 export default connect(({ app, loading }) => ({ app, loading }))(App)

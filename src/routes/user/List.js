@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal } from 'antd'
-import styles from './UserList.less'
+import styles from './List.less'
 import classnames from 'classnames'
 import AnimTableBody from '../../components/DataTable/AnimTableBody'
 import { DropOption } from '../../components'
@@ -9,7 +9,7 @@ import { Link } from 'dva/router'
 
 const confirm = Modal.confirm
 
-function list ({ loading, dataSource, pagination, onPageChange, onDeleteItem, onEditItem, isMotion, location }) {
+const List = ({ onDeleteItem, onEditItem, isMotion, location, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       onEditItem(record)
@@ -53,7 +53,7 @@ function list ({ loading, dataSource, pagination, onPageChange, onDeleteItem, on
 
   const getBodyWrapperProps = {
     page: location.query.page,
-    current: pagination.current,
+    current: tableProps.pagination.current,
   }
 
   const getBodyWrapper = body => { return isMotion ? <AnimTableBody {...getBodyWrapperProps} body={body} /> : body }
@@ -61,12 +61,12 @@ function list ({ loading, dataSource, pagination, onPageChange, onDeleteItem, on
   return (
     <div>
       <Table
+        {...tableProps}
         className={classnames({ [styles.table]: true, [styles.motion]: isMotion })}
+        bordered
+        scroll={{ x: 1200 }}
         columns={columns}
-        dataSource={dataSource}
-        loading={loading}
-        onChange={onPageChange}
-        pagination={pagination}
+        simple
         rowKey={record => record.id}
         getBodyWrapper={getBodyWrapper}
       />
@@ -74,15 +74,11 @@ function list ({ loading, dataSource, pagination, onPageChange, onDeleteItem, on
   )
 }
 
-list.propTypes = {
-  loading: PropTypes.bool,
-  dataSource: PropTypes.array,
-  pagination: PropTypes.object,
-  onPageChange: PropTypes.func,
+List.propTypes = {
   onDeleteItem: PropTypes.func,
   onEditItem: PropTypes.func,
   isMotion: PropTypes.bool,
   location: PropTypes.object,
 }
 
-export default list
+export default List

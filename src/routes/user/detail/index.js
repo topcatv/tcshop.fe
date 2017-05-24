@@ -4,7 +4,6 @@ import { connect } from 'dva'
 import styles from './index.less'
 
 const Detail = ({ userDetail }) => {
-  console.log(userDetail)
   const { data } = userDetail
   const content = []
   for (let key in data) {
