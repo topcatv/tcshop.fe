@@ -36,17 +36,17 @@ const Role = ({ location, dispatch, role, loading }) => {
     },
     onAdd () {
       dispatch(routerRedux.push({
-        pathname: '/role/edit',
+        pathname: '/role/create',
       }))
     },
   }
 
-  const roleListProps = {
+  const listProps = {
     dataSource: list,
     loading,
     pagination,
     location,
-    onPageChange (page) {
+    onChange (page) {
       const { query, pathname } = location
       dispatch(routerRedux.push({
         pathname,
@@ -71,7 +71,7 @@ const Role = ({ location, dispatch, role, loading }) => {
   return (
     <div className="content-inner">
       <RoleFilter {...roleFilterProps} />
-      <RoleList {...roleListProps} />
+      <RoleList {...listProps} />
     </div>
   )
 }

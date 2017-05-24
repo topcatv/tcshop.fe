@@ -40,12 +40,22 @@ const RoleEdit = ({
         ...getFieldsValue(),
         id: item.id,
       }
-      dispatch({
-        type: 'roleDetail/create',
-        payload: {
-          ...data,
-        },
-      })
+      console.log(data)
+      if (data.id) {
+        dispatch({
+          type: 'roleDetail/update',
+          payload: {
+            ...data,
+          },
+        })
+      } else {
+        dispatch({
+          type: 'roleDetail/create',
+          payload: {
+            ...data,
+          },
+        })
+      }
     })
   }
 

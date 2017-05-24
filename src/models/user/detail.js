@@ -1,5 +1,6 @@
 import pathToRegexp from 'path-to-regexp'
 import { query } from '../../services/user'
+import lodash from 'lodash'
 
 export default {
 

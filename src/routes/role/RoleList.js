@@ -3,10 +3,13 @@ import PropTypes from 'prop-types'
 import { Table, Modal } from 'antd'
 import { DropOption } from '../../components'
 import { Link } from 'dva/router'
+import AnimTableBody from '../../components/DataTable/AnimTableBody'
+import classnames from 'classnames'
+import styles from './List.less'
 
 const confirm = Modal.confirm
 
-function list ({ loading, dataSource, pagination, onPageChange, onDeleteItem, onEditItem }) {
+function list ({ onDeleteItem, onEditItem, location, ...tableProps }) {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       onEditItem(record)
@@ -47,25 +50,28 @@ function list ({ loading, dataSource, pagination, onPageChange, onDeleteItem, on
     },
   ]
 
+  const getBodyWrapperProps = {
+    page: location.query.page,
+    current: tableProps.pagination.current,
+  }
+
+  const getBodyWrapper = body => { return <AnimTableBody {...getBodyWrapperProps} body={body} /> }
+
   return (
     <div>
       <Table
+        {...tableProps}
         columns={columns}
-        dataSource={dataSource}
-        loading={loading}
-        onChange={onPageChange}
-        pagination={pagination}
+        className={classnames({ [styles.table]: true, [styles.motion]: true })}
+        simple
         rowKey={record => record.id}
+        getBodyWrapper={getBodyWrapper}
       />
     </div>
   )
 }
 
 list.propTypes = {
-  loading: PropTypes.bool,
-  dataSource: PropTypes.array,
-  pagination: PropTypes.object,
-  onPageChange: PropTypes.func,
   onDeleteItem: PropTypes.func,
   onEditItem: PropTypes.func,
   location: PropTypes.object,

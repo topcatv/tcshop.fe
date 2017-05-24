@@ -1,6 +1,6 @@
 import pathToRegexp from 'path-to-regexp'
 import { routerRedux } from 'dva/router'
-import { get, create, getAllPermission } from '../../services/role'
+import { get, create, update, queryPermissions } from '../../services/role'
 
 export default {
 
@@ -17,8 +17,8 @@ export default {
         let match = pathToRegexp('/role/:id').exec(location.pathname)
         if (match) {
           let type = 'query'
-          if (match[1] === 'edit') {
-            type = 'loadAllPermission'
+          if (match[1] === 'create') {
+            type = 'preparForCreate'
           }
           dispatch({ type, payload: { id: match[1] } })
         }
@@ -35,7 +35,7 @@ export default {
       payload,
     }, { call, put }) {
       const data = yield call(get, payload)
-      const permissionsData = yield call(getAllPermission)
+      const permissionsData = yield call(queryPermissions)
       const { success, message, status, ...other } = data
       if (success) {
         yield put({
@@ -49,14 +49,14 @@ export default {
         throw data
       }
     },
-    *loadAllPermission ({
+    *preparForCreate ({
       payload,
     }, { call, put }) {
-      const data = yield call(getAllPermission)
+      const data = yield call(queryPermissions)
       const { success, message, status, ...other } = data
       if (success) {
         yield put({
-          type: 'allPermission',
+          type: 'allPermissionAndClearItem',
           payload: {
             allPermission: other.data,
           },
@@ -67,6 +67,17 @@ export default {
     },
     *create ({ payload }, { call, put }) {
       const data = yield call(create, payload)
+      if (data.success) {
+        yield put(routerRedux.goBack())
+      } else {
+        throw data
+      }
+    },
+    *update ({ payload }, { select, call, put }) {
+      console.log(payload)
+      const id = yield select(({ roleDetail }) => roleDetail.item.id)
+      const newUser = { ...payload, id }
+      const data = yield call(update, newUser)
       if (data.success) {
         yield put(routerRedux.goBack())
       } else {
@@ -84,10 +95,11 @@ export default {
         allPermission,
       }
     },
-    allPermission (state, { payload }) {
+    allPermissionAndClearItem (state, { payload }) {
       const { allPermission } = payload
       return {
         ...state,
+        item: {},
         allPermission,
       }
     },

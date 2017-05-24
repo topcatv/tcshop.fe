@@ -1,10 +1,10 @@
 import { request, config } from '../utils'
 const { api } = config
-const { role, permission } = api
+const { role, roles, permissions } = api
 
 export async function query (params) {
   return request({
-    url: role.replace('/:id', ''),
+    url: roles,
     method: 'get',
     data: params,
   })
@@ -12,14 +12,15 @@ export async function query (params) {
 
 export async function get (params) {
   return request({
-    url: role.replace('/:id', `/${params.id}`),
+    url: role,
     method: 'get',
+    data: params,
   })
 }
 
 export async function create (params) {
   return request({
-    url: role.replace('/:id', '/add'),
+    url: roles,
     method: 'post',
     data: params,
   })
@@ -27,8 +28,9 @@ export async function create (params) {
 
 export async function remove (params) {
   return request({
-    url: role.replace('/:id', `/${params.id}`),
+    url: role,
     method: 'delete',
+    data: params,
   })
 }
 
@@ -40,9 +42,10 @@ export async function update (params) {
   })
 }
 
-export async function getAllPermission () {
+export async function queryPermissions (params) {
   return request({
-    url: permission.replace('/:id', ''),
+    url: permissions,
     method: 'get',
+    data: params,
   })
 }
