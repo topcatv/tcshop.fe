@@ -85,6 +85,38 @@ const Routers = function ({ history, app }) {
               cb(null, require('./routes/role/detail/'))
             }, 'role-detail')
           },
+        }, {
+          path: 'brand',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/brand'))
+              cb(null, require('./routes/brand/'))
+            }, 'brand')
+          },
+        }, {
+          path: 'brand/create',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/brand/detail'))
+              cb(null, require('./routes/brand/edit/'))
+            }, 'brand-create')
+          },
+        }, {
+          path: 'brand/edit/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/brand/detail'))
+              cb(null, require('./routes/brand/edit/'))
+            }, 'brand-edit')
+          },
+        }, {
+          path: 'brand/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/brand/detail'))
+              cb(null, require('./routes/brand/detail/'))
+            }, 'brand-detail')
+          },
         },
         /* , {
           path: 'request',

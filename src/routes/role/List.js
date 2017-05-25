@@ -1,15 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal } from 'antd'
-import styles from './List.less'
-import classnames from 'classnames'
-import AnimTableBody from '../../components/DataTable/AnimTableBody'
 import { DropOption } from '../../components'
 import { Link } from 'dva/router'
+import AnimTableBody from '../../components/DataTable/AnimTableBody'
+import classnames from 'classnames'
+import styles from './List.less'
 
 const confirm = Modal.confirm
 
-const List = ({ onDeleteItem, onEditItem, isMotion, location, ...tableProps }) => {
+function List ({ onDeleteItem, onEditItem, location, ...tableProps }) {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       onEditItem(record)
@@ -25,25 +25,25 @@ const List = ({ onDeleteItem, onEditItem, isMotion, location, ...tableProps }) =
 
   const columns = [
     {
-      title: '用户名',
-      dataIndex: 'userName',
-      key: 'userName',
-      render: (text, record) => <Link to={`user/${record.id}`}>{text}</Link>,
+      title: '角色名',
+      dataIndex: 'name',
+      key: 'name',
+      render: (text, record) => <Link to={`role/${record.id}`}>{text}</Link>,
     }, {
-      title: '登陆账号',
-      dataIndex: 'loginName',
-      key: 'loginName',
-    }, {
-      title: '注册时间',
-      dataIndex: 'registerDate',
-      key: 'registerDate',
-    }, {
-      title: '最后一次登陆时间',
-      dataIndex: 'lastLoginTime',
-      key: 'lastLoginTime',
+      title: '权限',
+      dataIndex: 'permissions',
+      key: 'permissions',
+      render: (text, record) => {
+        if (record.permissions) {
+          return record.permissions.forEach((p) => {
+            return { p }
+          })
+        }
+        return ''
+      },
     }, {
       title: '操作',
-      key: 'password',
+      key: 'id',
       width: 100,
       render: (text, record) => {
         return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: '编辑' }, { key: '2', name: '删除' }]} />
@@ -56,14 +56,13 @@ const List = ({ onDeleteItem, onEditItem, isMotion, location, ...tableProps }) =
     current: tableProps.pagination.current,
   }
 
-  const getBodyWrapper = body => { return isMotion ? <AnimTableBody {...getBodyWrapperProps} body={body} /> : body }
+  const getBodyWrapper = body => { return <AnimTableBody {...getBodyWrapperProps} body={body} /> }
 
-  console.log(tableProps)
   return (
     <div>
       <Table
         {...tableProps}
-        className={classnames({ [styles.table]: true, [styles.motion]: isMotion })}
+        className={classnames({ [styles.table]: true, [styles.motion]: true })}
         columns={columns}
         simple
         rowKey={record => record.id}
@@ -76,7 +75,6 @@ const List = ({ onDeleteItem, onEditItem, isMotion, location, ...tableProps }) =
 List.propTypes = {
   onDeleteItem: PropTypes.func,
   onEditItem: PropTypes.func,
-  isMotion: PropTypes.bool,
   location: PropTypes.object,
 }
 

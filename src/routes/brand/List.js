@@ -9,7 +9,7 @@ import styles from './List.less'
 
 const confirm = Modal.confirm
 
-function list ({ onDeleteItem, onEditItem, location, ...tableProps }) {
+function List ({ onDeleteItem, onEditItem, location, ...tableProps }) {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       onEditItem(record)
@@ -25,24 +25,34 @@ function list ({ onDeleteItem, onEditItem, location, ...tableProps }) {
 
   const columns = [
     {
-      title: '角色名',
+      title: 'id',
+      dataIndex: 'id',
+      key: 'id',
+      render: (text, record) => <Link to={`Brand/${record.id}`}>{text}</Link>,
+    },
+    {
+      title: 'name',
       dataIndex: 'name',
       key: 'name',
-      render: (text, record) => <Link to={`role/${record.id}`}>{text}</Link>,
-    }, {
-      title: '权限',
-      dataIndex: 'permissions',
-      key: 'permissions',
-      render: (text, record) => {
-        if (record.permissions) {
-          record.permissions.forEach((p) => {
-            return <span>{p}</span>
-          })
-        }
-      },
-    }, {
+    },
+    {
+      title: 'logo',
+      dataIndex: 'logo',
+      key: 'logo',
+    },
+    {
+      title: 'position',
+      dataIndex: 'position',
+      key: 'position',
+    },
+    {
+      title: 'createTime',
+      dataIndex: 'createTime',
+      key: 'createTime',
+    },
+    {
       title: '操作',
-      key: 'id',
+      key: 'op',
       width: 100,
       render: (text, record) => {
         return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: '编辑' }, { key: '2', name: '删除' }]} />
@@ -61,8 +71,8 @@ function list ({ onDeleteItem, onEditItem, location, ...tableProps }) {
     <div>
       <Table
         {...tableProps}
-        columns={columns}
         className={classnames({ [styles.table]: true, [styles.motion]: true })}
+        columns={columns}
         simple
         rowKey={record => record.id}
         getBodyWrapper={getBodyWrapper}
@@ -71,10 +81,10 @@ function list ({ onDeleteItem, onEditItem, location, ...tableProps }) {
   )
 }
 
-list.propTypes = {
+List.propTypes = {
   onDeleteItem: PropTypes.func,
   onEditItem: PropTypes.func,
   location: PropTypes.object,
 }
 
-export default list
+export default List

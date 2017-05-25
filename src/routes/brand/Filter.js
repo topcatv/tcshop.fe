@@ -17,7 +17,7 @@ const TwoColProps = {
   xl: 96,
 }
 
-const RoleFilter = ({
+const Filter = ({
   onAdd,
   onFilterChange,
   filter,
@@ -74,11 +74,11 @@ const RoleFilter = ({
   )
 }
 
-RoleFilter.propTypes = {
+Filter.propTypes = {
   onAdd: PropTypes.func,
   form: PropTypes.object,
   filter: PropTypes.object,
   onFilterChange: PropTypes.func,
 }
 
-export default Form.create()(RoleFilter)
+export default Form.create()(Filter)

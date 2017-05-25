@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
-import { Form, Input, Row, Col, Button, Modal, Transfer } from 'antd'
+import { Form, Input, Row, Col, Button, Modal } from 'antd'
 
 const FormItem = Form.Item
 const confirm = Modal.confirm
@@ -17,7 +17,7 @@ const formItemLayout = {
 }
 
 const Edit = ({
-  roleDetail,
+  brandDetail,
   dispatch,
   form: {
     getFieldDecorator,
@@ -25,11 +25,7 @@ const Edit = ({
     getFieldsValue,
   },
 }) => {
-  const { item, allPermission } = roleDetail
-
-  const permissions = allPermission.map((e) => {
-    return { key: `${e.id}`, title: e.permission, description: e.permission, disable: false }
-  })
+  const { item } = brandDetail
 
   function handleOk () {
     validateFields((errors) => {
@@ -42,14 +38,14 @@ const Edit = ({
       }
       if (data.id) {
         dispatch({
-          type: 'roleDetail/update',
+          type: 'brandDetail/update',
           payload: {
             ...data,
           },
         })
       } else {
         dispatch({
-          type: 'roleDetail/create',
+          type: 'brandDetail/create',
           payload: {
             ...data,
           },
@@ -70,35 +66,34 @@ const Edit = ({
   return (
     <div className="content-inner">
       <Form layout="horizontal">
-        <FormItem label="角色名" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('name', {
-            initialValue: item.name,
-            rules: [
-              {
-                required: true,
-                message: '请输入角色名',
-              },
-            ],
-          })(<Input />)}
+        <FormItem label="">
+            {getFieldDecorator('id', {
+              initialValue: item.id,
+            })(<Input type="hidden" />)}
         </FormItem>
-        <FormItem label="权限" {...formItemLayout}>
-          {getFieldDecorator('permissions', {
-            initialValue: item.permissions,
-            valuePropName: 'targetKeys',
-            rules: [
-              {
-                required: true,
-                message: '请选择权限',
-              },
-            ],
-          })(
-            <Transfer
-              titles={['待选', '已选']}
-              dataSource={permissions}
-              render={p => p.title}
-              notFoundContent={'暂无数据'}
-            />
-          )}
+        <FormItem label="name" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('name', {
+              initialValue: item.name,
+              rules: [],
+            })(<Input />)}
+        </FormItem>
+        <FormItem label="logo" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('logo', {
+              initialValue: item.logo,
+              rules: [],
+            })(<Input />)}
+        </FormItem>
+        <FormItem label="position" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('position', {
+              initialValue: item.position,
+              rules: [],
+            })(<Input />)}
+        </FormItem>
+        <FormItem label="create_time" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('create_time', {
+              initialValue: item.create_time,
+              rules: [],
+            })(<Input />)}
         </FormItem>
         <Row>
           <Col span={24} style={{ textAlign: 'right' }}>
@@ -113,8 +108,8 @@ const Edit = ({
 
 Edit.propTypes = {
   form: PropTypes.object.isRequired,
-  roleDetail: PropTypes.object,
+  brandDetail: PropTypes.object,
   dispatch: PropTypes.func,
 }
 
-export default connect(({ roleDetail }) => ({ roleDetail }))(Form.create()(Edit))
+export default connect(({ brandDetail }) => ({ brandDetail }))(Form.create()(Edit))

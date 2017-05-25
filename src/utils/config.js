@@ -19,6 +19,8 @@ module.exports = {
     user: '/user/:id',
     roles: '/role',
     role: '/role/:id',
+    brands: '/brand',
+    brand: '/brand/:id',
     permissions: '/permission',
     permission: '/permission/:id',
     dashboard: '/dashboard',

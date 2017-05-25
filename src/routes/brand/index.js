@@ -5,8 +5,8 @@ import { connect } from 'dva'
 import List from './List'
 import Filter from './Filter'
 
-const Role = ({ location, dispatch, role, loading }) => {
-  const { list, pagination } = role
+const Brand = ({ location, dispatch, brand, loading }) => {
+  const { list, pagination } = brand
   const { pageSize } = pagination
 
   const filterProps = {
@@ -25,25 +25,25 @@ const Role = ({ location, dispatch, role, loading }) => {
     },
     onSearch (fieldsValue) {
       fieldsValue.keyword.length ? dispatch(routerRedux.push({
-        pathname: '/role',
+        pathname: '/brand',
         query: {
           field: fieldsValue.field,
           keyword: fieldsValue.keyword,
         },
       })) : dispatch(routerRedux.push({
-        pathname: '/role',
+        pathname: '/brand',
       }))
     },
     onAdd () {
       dispatch(routerRedux.push({
-        pathname: '/role/create',
+        pathname: '/brand/create',
       }))
     },
   }
 
   const listProps = {
     dataSource: list,
-    loading: loading.effects['role/query'],
+    loading: loading.effects['brand/query'],
     pagination,
     location,
     onChange (page) {
@@ -59,12 +59,12 @@ const Role = ({ location, dispatch, role, loading }) => {
     },
     onDeleteItem (id) {
       dispatch({
-        type: 'role/delete',
+        type: 'brand/delete',
         payload: id,
       })
     },
     onEditItem (item) {
-      dispatch(routerRedux.push(`role/edit/${item.id}`))
+      dispatch(routerRedux.push(`brand/edit/${item.id}`))
     },
   }
 
@@ -76,11 +76,11 @@ const Role = ({ location, dispatch, role, loading }) => {
   )
 }
 
-Role.propTypes = {
-  role: PropTypes.object,
+Brand.propTypes = {
+  brand: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
   loading: PropTypes.object,
 }
 
-export default connect(({ role, loading }) => ({ role, loading }))(Role)
+export default connect(({ brand, loading }) => ({ brand, loading }))(Brand)
