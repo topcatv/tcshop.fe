@@ -25,28 +25,18 @@ function List ({ onDeleteItem, onEditItem, location, ...tableProps }) {
 
   const columns = [
     {
-      title: 'id',
-      dataIndex: 'id',
-      key: 'id',
+      title: '品牌名',
+      dataIndex: 'name',
+      key: 'name',
       render: (text, record) => <Link to={`Brand/${record.id}`}>{text}</Link>,
     },
     {
-      title: 'name',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: 'logo',
+      title: '品牌logo',
       dataIndex: 'logo',
       key: 'logo',
     },
     {
-      title: 'position',
-      dataIndex: 'position',
-      key: 'position',
-    },
-    {
-      title: 'createTime',
+      title: '创建时间',
       dataIndex: 'createTime',
       key: 'createTime',
     },

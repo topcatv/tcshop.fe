@@ -1,8 +1,9 @@
 import React from 'react'
+import Qiniu from 'react-qiniu'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
-import { Form, Input, Row, Col, Button, Modal } from 'antd'
+import { Form, Input, InputNumber, Row, Col, Button, Modal } from 'antd'
 
 const FormItem = Form.Item
 const confirm = Modal.confirm
@@ -25,7 +26,25 @@ const Edit = ({
     getFieldsValue,
   },
 }) => {
-  const { item } = brandDetail
+  const { item, upload } = brandDetail
+
+  function onDrop (files) {
+    console.log(files)
+  }
+
+  function onUpload (files) {
+    files.map((f) => {
+      f.onprogress = function (e) {
+        console.log(e.percent)
+        if (e.percent >= 100) {
+          dispatch({
+            type: 'brandDetail/logoShow',
+          })
+        }
+      }
+      return f
+    })
+  }
 
   function handleOk () {
     validateFields((errors) => {
@@ -71,29 +90,26 @@ const Edit = ({
               initialValue: item.id,
             })(<Input type="hidden" />)}
         </FormItem>
-        <FormItem label="name" hasFeedback {...formItemLayout}>
+        <FormItem label="品牌名" hasFeedback {...formItemLayout}>
             {getFieldDecorator('name', {
               initialValue: item.name,
               rules: [],
             })(<Input />)}
         </FormItem>
-        <FormItem label="logo" hasFeedback {...formItemLayout}>
+        <FormItem label="品牌logo" hasFeedback {...formItemLayout}>
             {getFieldDecorator('logo', {
               initialValue: item.logo,
               rules: [],
-            })(<Input />)}
+            })(<Input type="hidden" />)}
+          <Qiniu uploadUrl="http://upload-z2.qiniu.com" uploadKey={upload.uploadKey} onDrop={onDrop} size={150} token={upload.token} onUpload={onUpload}>
+            {item.logo ? <img src={`http://orop9dwa6.bkt.clouddn.com/${item.logo}`} /> : <div>拖拽文件到此处上传</div>}
+          </Qiniu>
         </FormItem>
-        <FormItem label="position" hasFeedback {...formItemLayout}>
+        <FormItem label="显示位置" hasFeedback {...formItemLayout}>
             {getFieldDecorator('position', {
               initialValue: item.position,
               rules: [],
-            })(<Input />)}
-        </FormItem>
-        <FormItem label="create_time" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('create_time', {
-              initialValue: item.create_time,
-              rules: [],
-            })(<Input />)}
+            })(<InputNumber min={1} step={1} />)}
         </FormItem>
         <Row>
           <Col span={24} style={{ textAlign: 'right' }}>
