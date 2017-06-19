@@ -2,6 +2,7 @@ import React from 'react'
 import Qiniu from 'react-qiniu'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
+import { QINIU_IMG_HOST } from '../../../utils/config'
 import { connect } from 'dva'
 import { Form, Input, InputNumber, Row, Col, Button, Modal } from 'antd'
 
@@ -102,7 +103,7 @@ const Edit = ({
               rules: [],
             })(<Input type="hidden" />)}
           <Qiniu uploadUrl="http://upload-z2.qiniu.com" uploadKey={upload.uploadKey} onDrop={onDrop} size={210} token={upload.token} onUpload={onUpload}>
-            {item.logo ? <img src={`http://orop9dwa6.bkt.clouddn.com/${item.logo}_detail`} alt="" /> : <div>拖拽文件到此处上传</div>}
+            {item.logo ? <img src={`${QINIU_IMG_HOST}/${item.logo}_detail`} alt="" /> : <div>拖拽文件到此处上传</div>}
           </Qiniu>
         </FormItem>
         <FormItem label="显示位置" hasFeedback {...formItemLayout}>

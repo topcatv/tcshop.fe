@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import { QINIU_IMG_HOST } from '../../../utils/config'
 import styles from './index.less'
 
 const Detail = ({ brandDetail }) => {
@@ -11,7 +12,7 @@ const Detail = ({ brandDetail }) => {
       if (key === 'logo') {
         content.push(<div key={key} className={styles.item}>
           <div>{key}</div>
-          <div><img src={`http://orop9dwa6.bkt.clouddn.com/${item[key]}_detail`} alt="" /></div>
+          <div><img src={`${QINIU_IMG_HOST}/${item[key]}_detail`} alt="" /></div>
         </div>)
       } else {
         content.push(<div key={key} className={styles.item}>

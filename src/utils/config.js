@@ -8,6 +8,7 @@ module.exports = {
   baseURL: 'http://localhost:8000/api/dev',
   YQL: ['http://www.zuimeitianqi.com'],
   CORS: ['http://localhost:7000'],
+  QINIU_IMG_HOST: 'http://orop9dwa6.bkt.clouddn.com',
   openPages: ['/login'],
   apiPrefix: '/api/dev',
   api: {
@@ -23,6 +24,8 @@ module.exports = {
     brand: '/brand/:id',
     permissions: '/permission',
     permission: '/permission/:id',
+    products: '/product',
+    product: '/product/:id',
     dashboard: '/dashboard',
   },
 }

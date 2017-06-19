@@ -117,6 +117,38 @@ const Routers = function ({ history, app }) {
               cb(null, require('./routes/brand/detail/'))
             }, 'brand-detail')
           },
+        }, {
+          path: 'product',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/product'))
+              cb(null, require('./routes/product/'))
+            }, 'product')
+          },
+        }, {
+          path: 'product/create',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/product/detail'))
+              cb(null, require('./routes/product/edit/'))
+            }, 'product-create')
+          },
+        }, {
+          path: 'product/edit/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/product/detail'))
+              cb(null, require('./routes/product/edit/'))
+            }, 'product-edit')
+          },
+        }, {
+          path: 'product/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/product/detail'))
+              cb(null, require('./routes/product/detail/'))
+            }, 'product-detail')
+          },
         },
         /* , {
           path: 'request',

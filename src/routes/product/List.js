@@ -5,7 +5,6 @@ import { DropOption } from '../../components'
 import { Link } from 'dva/router'
 import AnimTableBody from '../../components/DataTable/AnimTableBody'
 import classnames from 'classnames'
-import { QINIU_IMG_HOST } from '../../utils/config'
 import styles from './List.less'
 
 const confirm = Modal.confirm
@@ -26,21 +25,60 @@ function List ({ onDeleteItem, onEditItem, location, ...tableProps }) {
 
   const columns = [
     {
-      title: '品牌名',
+      title: 'id',
+      dataIndex: 'id',
+      key: 'id',
+      render: (text, record) => <Link to={`Product/${record.id}`}>{text}</Link>,
+    },
+    {
+      title: 'brandId',
+      dataIndex: 'brandId',
+      key: 'brandId',
+    },
+    {
+      title: 'type',
+      dataIndex: 'type',
+      key: 'type',
+    },
+    {
+      title: 'code',
+      dataIndex: 'code',
+      key: 'code',
+    },
+    {
+      title: 'name',
       dataIndex: 'name',
       key: 'name',
-      render: (text, record) => <Link to={`Brand/${record.id}`}>{text}</Link>,
     },
     {
-      title: '品牌logo',
-      dataIndex: 'logo',
-      key: 'logo',
-      render: (text, record) => <img src={`${QINIU_IMG_HOST}/${text}_list`} alt={record.name} />,
+      title: 'pics',
+      dataIndex: 'pics',
+      key: 'pics',
     },
     {
-      title: '创建时间',
-      dataIndex: 'createTime',
-      key: 'createTime',
+      title: 'tags',
+      dataIndex: 'tags',
+      key: 'tags',
+    },
+    {
+      title: 'price',
+      dataIndex: 'price',
+      key: 'price',
+    },
+    {
+      title: 'stock',
+      dataIndex: 'stock',
+      key: 'stock',
+    },
+    {
+      title: 'description',
+      dataIndex: 'description',
+      key: 'description',
+    },
+    {
+      title: 'freightage',
+      dataIndex: 'freightage',
+      key: 'freightage',
     },
     {
       title: '操作',

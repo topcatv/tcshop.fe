@@ -30,8 +30,8 @@ module.exports = [
     id: 31,
     mpid: -1,
     bpid: 3,
-    name: '编辑角色',
-    router: '/role/edit',
+    name: '创建角色',
+    router: '/role/create',
   },
   {
     id: 32,
@@ -44,7 +44,7 @@ module.exports = [
     id: 33,
     mpid: -1,
     bpid: 3,
-    name: '角色编辑',
+    name: '编辑角色',
     router: '/role/edit/:id',
   },
   {
@@ -58,8 +58,8 @@ module.exports = [
     id: 41,
     mpid: -1,
     bpid: 4,
-    name: '编辑品牌',
-    router: '/brand/edit',
+    name: '创建品牌',
+    router: '/brand/create',
   },
   {
     id: 42,
@@ -72,7 +72,7 @@ module.exports = [
     id: 43,
     mpid: -1,
     bpid: 4,
-    name: '品牌编辑',
+    name: '编辑品牌',
     router: '/brand/edit/:id',
   },
   {
@@ -81,6 +81,27 @@ module.exports = [
     name: '商品管理',
     icon: 'database',
     router: '/product',
+  },
+  {
+    id: 51,
+    mpid: -1,
+    bpid: 5,
+    name: '创建商品',
+    router: '/product/create',
+  },
+  {
+    id: 52,
+    mpid: -1,
+    bpid: 5,
+    name: '商品详情',
+    router: '/product/:id',
+  },
+  {
+    id: 53,
+    mpid: -1,
+    bpid: 5,
+    name: '编辑商品',
+    router: '/product/edit/:id',
   },
   {
     id: 6,
