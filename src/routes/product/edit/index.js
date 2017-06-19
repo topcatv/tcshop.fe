@@ -2,10 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
-import { Form, Input, Row, Col, Button, Modal, Transfer } from 'antd'
+import { Form, Input, Row, Col, Button, Modal, Radio, InputNumber, Select } from 'antd'
 
 const FormItem = Form.Item
 const confirm = Modal.confirm
+const RadioGroup = Radio.Group
+const Option = Select.Option
 
 const formItemLayout = {
   labelCol: {
@@ -71,65 +73,99 @@ const Edit = ({
               initialValue: item.id,
             })(<Input type="hidden" />)}
         </FormItem>
-        <FormItem label="brand_id" hasFeedback {...formItemLayout}>
+        <FormItem label="品牌" hasFeedback {...formItemLayout}>
             {getFieldDecorator('brand_id', {
               initialValue: item.brand_id,
               rules: [],
             })(<Input />)}
         </FormItem>
-        <FormItem label="type" hasFeedback {...formItemLayout}>
+        <FormItem label="商品类型" hasFeedback {...formItemLayout}>
             {getFieldDecorator('type', {
               initialValue: item.type,
-              rules: [],
-            })(<Input />)}
+              rules: [
+                {
+                  required: true,
+                  message: '请选择商品类型',
+                },
+              ],
+            })(
+              <RadioGroup>
+                <Radio value={1}>实物商品</Radio>
+                <Radio value={2}>虚拟商品</Radio>
+              </RadioGroup>
+            )}
         </FormItem>
-        <FormItem label="code" hasFeedback {...formItemLayout}>
+        <FormItem label="编码" hasFeedback {...formItemLayout}>
             {getFieldDecorator('code', {
               initialValue: item.code,
               rules: [],
             })(<Input />)}
         </FormItem>
-        <FormItem label="name" hasFeedback {...formItemLayout}>
+        <FormItem label="名称" hasFeedback {...formItemLayout}>
             {getFieldDecorator('name', {
               initialValue: item.name,
               rules: [],
             })(<Input />)}
         </FormItem>
-        <FormItem label="pics" hasFeedback {...formItemLayout}>
+        <FormItem label="图片" hasFeedback {...formItemLayout}>
             {getFieldDecorator('pics', {
               initialValue: item.pics,
               rules: [],
             })(<Input />)}
         </FormItem>
-        <FormItem label="tags" hasFeedback {...formItemLayout}>
+        <FormItem label="标签" hasFeedback {...formItemLayout}>
             {getFieldDecorator('tags', {
               initialValue: item.tags,
               rules: [],
-            })(<Input />)}
+            })(
+              <Select
+                mode="tags"
+                style={{ width: '100%' }}
+                searchPlaceholder="标签"
+              />
+            )}
         </FormItem>
-        <FormItem label="price" hasFeedback {...formItemLayout}>
+        <FormItem label="价格" hasFeedback {...formItemLayout}>
             {getFieldDecorator('price', {
               initialValue: item.price,
               rules: [],
-            })(<Input />)}
+            })(
+              <InputNumber
+                defaultValue={0}
+                min={0}
+                precision={2}
+              />
+            )}
         </FormItem>
-        <FormItem label="stock" hasFeedback {...formItemLayout}>
+        <FormItem label="库存" hasFeedback {...formItemLayout}>
             {getFieldDecorator('stock', {
               initialValue: item.stock,
               rules: [],
-            })(<Input />)}
+            })(
+              <InputNumber
+                defaultValue={0}
+                min={0}
+                precision={0}
+              />
+            )}
         </FormItem>
-        <FormItem label="description" hasFeedback {...formItemLayout}>
+        <FormItem label="描述" hasFeedback {...formItemLayout}>
             {getFieldDecorator('description', {
               initialValue: item.description,
               rules: [],
-            })(<Input />)}
+            })(<Input type="textarea" rows={4} />)}
         </FormItem>
-        <FormItem label="freightage" hasFeedback {...formItemLayout}>
+        <FormItem label="运费" hasFeedback {...formItemLayout}>
             {getFieldDecorator('freightage', {
               initialValue: item.freightage,
               rules: [],
-            })(<Input />)}
+            })(
+              <InputNumber
+                defaultValue={0}
+                min={0}
+                precision={2}
+              />
+            )}
         </FormItem>
         <Row>
           <Col span={24} style={{ textAlign: 'right' }}>
