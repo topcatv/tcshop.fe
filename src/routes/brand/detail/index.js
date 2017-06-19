@@ -8,10 +8,17 @@ const Detail = ({ brandDetail }) => {
   const content = []
   for (let key in item) {
     if ({}.hasOwnProperty.call(item, key)) {
-      content.push(<div key={key} className={styles.item}>
-        <div>{key}</div>
-        <div>{String(item[key])}</div>
-      </div>)
+      if (key === 'logo') {
+        content.push(<div key={key} className={styles.item}>
+          <div>{key}</div>
+          <div><img src={`http://orop9dwa6.bkt.clouddn.com/${item[key]}_detail`} alt="" /></div>
+        </div>)
+      } else {
+        content.push(<div key={key} className={styles.item}>
+          <div>{key}</div>
+          <div>{String(item[key])}</div>
+        </div>)
+      }
     }
   }
   return (<div className="content-inner">

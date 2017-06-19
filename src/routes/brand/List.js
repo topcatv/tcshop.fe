@@ -34,6 +34,7 @@ function List ({ onDeleteItem, onEditItem, location, ...tableProps }) {
       title: '品牌logo',
       dataIndex: 'logo',
       key: 'logo',
+      render: (text, record) => <img src={`http://orop9dwa6.bkt.clouddn.com/${text}_list`} alt={record.name} />,
     },
     {
       title: '创建时间',

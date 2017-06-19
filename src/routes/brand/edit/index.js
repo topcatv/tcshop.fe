@@ -101,8 +101,8 @@ const Edit = ({
               initialValue: item.logo,
               rules: [],
             })(<Input type="hidden" />)}
-          <Qiniu uploadUrl="http://upload-z2.qiniu.com" uploadKey={upload.uploadKey} onDrop={onDrop} size={150} token={upload.token} onUpload={onUpload}>
-            {item.logo ? <img src={`http://orop9dwa6.bkt.clouddn.com/${item.logo}`} /> : <div>拖拽文件到此处上传</div>}
+          <Qiniu uploadUrl="http://upload-z2.qiniu.com" uploadKey={upload.uploadKey} onDrop={onDrop} size={210} token={upload.token} onUpload={onUpload}>
+            {item.logo ? <img src={`http://orop9dwa6.bkt.clouddn.com/${item.logo}_detail`} alt="" /> : <div>拖拽文件到此处上传</div>}
           </Qiniu>
         </FormItem>
         <FormItem label="显示位置" hasFeedback {...formItemLayout}>
