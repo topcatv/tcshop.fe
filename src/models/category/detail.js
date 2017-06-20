@@ -47,16 +47,15 @@ export default {
         throw data
       }
     },
-     *preparForCreate ({
+    *preparForCreate ({
       payload,
     }, { call, put }) {
       const data = yield call(queryCategoryTree)
-      const { success, message, status, ...other } = data
-      if (success) {
+      if (data.success) {
         yield put({
           type: 'allCategoryAndClearItem',
           payload: {
-            allCategory: other.data,
+            allCategory: data.data,
           },
         })
       } else {
@@ -97,5 +96,12 @@ export default {
         item: {},
       }
     },
+    allCategoryAndClearItem (state, { payload }) {
+      const { allCategory } = payload
+      return {
+        ...state,
+        allCategory,
+      }
+    }
   },
 }
