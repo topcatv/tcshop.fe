@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
-import { Form, Input, Row, Col, Button, Modal,  InputNumber,TreeSelect } from 'antd'
+import { Form, Input, Row, Col, Button, Modal, InputNumber, TreeSelect } from 'antd'
 
 const FormItem = Form.Item
 const confirm = Modal.confirm
@@ -72,19 +72,19 @@ const Edit = ({
         </FormItem>
         <FormItem label="父分类" hasFeedback {...formItemLayout}>
             {getFieldDecorator('parentId', {
-              initialValue: item.parentId,
+              initialValue: `${item.parentId ? item.parentId : ''}`,
               rules: [],
-            })(  
-            <TreeSelect
-              showSearch
-              style={{ width: 300 }}
-              dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-              placeholder="Please select"
-              allowClear
-              treeData={allCategory}
-              treeDefaultExpandAll
-            >
-      </TreeSelect>)}
+            })(
+              <TreeSelect
+                showSearch
+                style={{ width: 300 }}
+                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                placeholder="请选择父分类"
+                allowClear
+                treeData={allCategory}
+                treeDefaultExpandAll
+              />
+            )}
         </FormItem>
         <FormItem label="分类名称" hasFeedback {...formItemLayout}>
             {getFieldDecorator('name', {

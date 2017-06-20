@@ -5,11 +5,11 @@ import { connect } from 'dva'
 import List from './List'
 import Filter from './Filter'
 
-const Category = ({ location, dispatch, category , loading }) => {
+const Category = ({ location, dispatch, category, loading }) => {
   const { list, pagination } = category
-    const { pageSize } = pagination
+  const { pageSize } = pagination
 
-    const filterProps = {
+  const filterProps = {
     filter: {
       ...location.query,
     },
@@ -57,6 +57,15 @@ const Category = ({ location, dispatch, category , loading }) => {
         },
       }))
     },
+    onDeleteItem (id) {
+      dispatch({
+        type: 'category/delete',
+        payload: id,
+      })
+    },
+    onEditItem (item) {
+      dispatch(routerRedux.push(`category/edit/${item.id}`))
+    },
   }
 
   return (
@@ -68,7 +77,7 @@ const Category = ({ location, dispatch, category , loading }) => {
 }
 
 Category.propTypes = {
-  role: PropTypes.object,
+  category: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
   loading: PropTypes.object,
