@@ -27,5 +27,8 @@ module.exports = {
     products: '/product',
     product: '/product/:id',
     dashboard: '/dashboard',
+    categorys : '/category',
+    category: '/category/:id',
+    categoryTree: '/category/tree',
   },
 }

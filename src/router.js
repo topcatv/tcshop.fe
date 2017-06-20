@@ -150,6 +150,40 @@ const Routers = function ({ history, app }) {
             }, 'product-detail')
           },
         },
+        {
+          path: 'category',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/category'))
+              cb(null, require('./routes/category/'))
+            }, 'category')
+          },
+        },
+         {
+          path: 'category/create',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/category/detail'))
+              cb(null, require('./routes/category/edit/'))
+            }, 'category-create')
+          },
+        }, {
+          path: 'category/edit/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/category/detail'))
+              cb(null, require('./routes/category/edit/'))
+            }, 'category-edit')
+          },
+        }, {
+          path: 'category/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/category/detail'))
+              cb(null, require('./routes/category/detail/'))
+            }, 'category-detail')
+          },
+        },
         /* , {
           path: 'request',
           getComponent (nextState, cb) {
