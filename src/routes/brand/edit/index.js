@@ -4,8 +4,8 @@ import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { QINIU_IMG_HOST } from '../../../utils/config'
 import { connect } from 'dva'
-import styles from './index.less'
-import { Upload, Icon, Form, Input, InputNumber, Row, Col, Button, Modal, message } from 'antd'
+import QiniuUploader from '../../../components/Uploader/QiniuUploader'
+import { Form, Input, InputNumber, Row, Col, Button, Modal } from 'antd'
 
 const FormItem = Form.Item
 const confirm = Modal.confirm
@@ -66,18 +66,6 @@ const Edit = ({
     })
   }
 
-  function beforeUpload (file) {
-    const isJPG = file.type === 'image/jpeg'
-    if (!isJPG) {
-      message.error('只能上传JPG图片')
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2
-    if (!isLt2M) {
-      message.error('图片大小必须小于2M')
-    }
-    return isJPG && isLt2M
-  }
-
   let handleChange = (info) => {
     if (info.file.status === 'done') {
       dispatch({
@@ -105,21 +93,14 @@ const Edit = ({
             initialValue: item.logo,
             rules: [],
           })(<Input type="hidden" />)}
-          <Upload
-            className={styles.avatar_uploader}
-            name="file"
-            showUploadList={false}
-            action="http://upload-z2.qiniu.com"
-            data={upload}
-            beforeUpload={beforeUpload}
-            onChange={handleChange}
-          >
-            {
-              item.logo ?
-                <img src={`${QINIU_IMG_HOST}/${item.logo}_detail`} alt="" className={styles.avatar} /> :
-                <Icon type="plus" className={styles.avatar_uploader_trigger} />
-            }
-          </Upload>
+          <QiniuUploader
+            imageType="image/jpeg"
+            uploadLimit={2}
+            handleChange={handleChange}
+            token={upload.token}
+            uploadKey={upload.key}
+            defaultImageUrl={item.logo ? `${QINIU_IMG_HOST}/${item.logo}_detail` : undefined}
+          />
         </FormItem>
         <FormItem label="显示位置" hasFeedback {...formItemLayout}>
           {getFieldDecorator('position', {
