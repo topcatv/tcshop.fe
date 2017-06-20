@@ -98,7 +98,6 @@ const Edit = ({
               rules: [],
             })(
               <InputNumber
-                defaultValue={0}
                 min={0}
                 precision={0}
               />

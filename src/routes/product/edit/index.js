@@ -131,7 +131,6 @@ const Edit = ({
               rules: [],
             })(
               <InputNumber
-                defaultValue={0}
                 min={0}
                 precision={2}
               />
@@ -143,7 +142,6 @@ const Edit = ({
               rules: [],
             })(
               <InputNumber
-                defaultValue={0}
                 min={0}
                 precision={0}
               />
@@ -161,7 +159,6 @@ const Edit = ({
               rules: [],
             })(
               <InputNumber
-                defaultValue={0}
                 min={0}
                 precision={2}
               />
