@@ -30,20 +30,6 @@ const Edit = ({
 }) => {
   const { item, upload } = brandDetail
 
-  function onUpload (files) {
-    files.map((f) => {
-      f.onprogress = function (e) {
-        console.log(e.percent)
-        if (e.percent >= 100) {
-          dispatch({
-            type: 'brandDetail/logoShow',
-          })
-        }
-      }
-      return f
-    })
-  }
-
   function handleOk () {
     validateFields((errors) => {
       if (errors) {
@@ -80,28 +66,23 @@ const Edit = ({
     })
   }
 
-  function getBase64 (img, callback) {
-    const reader = new FileReader()
-    reader.addEventListener('load', () => callback(reader.result))
-    reader.readAsDataURL(img)
-  }
-
   function beforeUpload (file) {
     const isJPG = file.type === 'image/jpeg'
     if (!isJPG) {
-      message.error('You can only upload JPG file!')
+      message.error('只能上传JPG图片')
     }
     const isLt2M = file.size / 1024 / 1024 < 2
     if (!isLt2M) {
-      message.error('Image must smaller than 2MB!')
+      message.error('图片大小必须小于2M')
     }
     return isJPG && isLt2M
   }
 
   let handleChange = (info) => {
     if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, imageUrl => this.setState({ imageUrl }))
+      dispatch({
+        type: 'brandDetail/logoShow',
+      })
     }
   }
 
@@ -126,7 +107,7 @@ const Edit = ({
           })(<Input type="hidden" />)}
           <Upload
             className={styles.avatar_uploader}
-            name="avatar"
+            name="file"
             showUploadList={false}
             action="http://upload-z2.qiniu.com"
             data={upload}

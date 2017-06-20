@@ -11,7 +11,7 @@ export default {
     upload: {
       files: [],
       token: '',
-      uploadKey: '',
+      key: '',
     },
   },
 
@@ -85,7 +85,7 @@ export default {
           type: 'setUpToken',
           payload: {
             token: data.data,
-            uploadKey: data.uploadKey,
+            key: data.uploadKey,
           },
         })
       } else {
@@ -119,7 +119,7 @@ export default {
         ...state,
         item: {
           ...state.item,
-          logo: state.upload.uploadKey,
+          logo: state.upload.key,
         },
       }
     },
