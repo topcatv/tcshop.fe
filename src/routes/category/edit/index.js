@@ -2,15 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
-<<<<<<< HEAD
-import { Form, Input, Row, Col, Button, Modal,  InputNumber,TreeSelect,Select } from 'antd'
-=======
 import { Form, Input, Row, Col, Button, Modal, InputNumber, TreeSelect } from 'antd'
->>>>>>> b3fc360188bb08eb206de57aea3f72efddbb545c
 
 const FormItem = Form.Item
 const confirm = Modal.confirm
-const TreeNode = TreeSelect.TreeNode
 const formItemLayout = {
   labelCol: {
     span: 6,
@@ -66,14 +61,6 @@ const Edit = ({
       },
     })
   }
-
-  function changeTree (value) {
-       this.setState({
-      ...this.state,
-      selectValue: item.parentId,
-       })
-  }
-
   return (
     <div className="content-inner">
       <Form layout="horizontal">
@@ -83,11 +70,10 @@ const Edit = ({
             })(<Input type="hidden" />)}
         </FormItem>
         <FormItem label="父分类" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('parentId', {
+          {getFieldDecorator('parentId', {
               initialValue: `${item.parentId ? item.parentId : ''}`,
               rules: [],
-            })(  
-            <TreeSelect
+            })(<TreeSelect
               showSearch
               style={{ width: 300 }}
               dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
@@ -95,9 +81,8 @@ const Edit = ({
               allowClear
               treeData={allCategory}
               treeDefaultExpandAll
-              onChange={changeTree}
             >
-      </TreeSelect>)}
+            </TreeSelect>)}
         </FormItem>
         <FormItem label="分类名称" hasFeedback {...formItemLayout}>
             {getFieldDecorator('name', {
