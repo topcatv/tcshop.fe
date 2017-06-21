@@ -57,6 +57,16 @@ const Category = ({ location, dispatch, category , loading }) => {
         },
       }))
     },
+
+    onEditItem (item) {
+      dispatch(routerRedux.push(`category/edit/${item.id}`))
+    },
+      onDeleteItem (id) {
+      dispatch({
+        type: 'category/delete',
+        payload: id,
+      })
+    },
   }
 
   return (

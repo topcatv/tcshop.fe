@@ -2,10 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
-import { Form, Input, Row, Col, Button, Modal,  InputNumber,TreeSelect } from 'antd'
+import { Form, Input, Row, Col, Button, Modal,  InputNumber,TreeSelect,Select } from 'antd'
 
 const FormItem = Form.Item
 const confirm = Modal.confirm
+const TreeNode = TreeSelect.TreeNode
 const formItemLayout = {
   labelCol: {
     span: 6,
@@ -62,6 +63,13 @@ const Edit = ({
     })
   }
 
+  function changeTree (value) {
+       this.setState({
+      ...this.state,
+      selectValue: item.parentId,
+       })
+  }
+
   return (
     <div className="content-inner">
       <Form layout="horizontal">
@@ -83,6 +91,7 @@ const Edit = ({
               allowClear
               treeData={allCategory}
               treeDefaultExpandAll
+              onChange={changeTree}
             >
       </TreeSelect>)}
         </FormItem>
