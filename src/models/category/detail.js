@@ -1,6 +1,6 @@
 import pathToRegexp from 'path-to-regexp'
 import { routerRedux } from 'dva/router'
-import { get, create, update,queryCategoryTree } from '../../services/category'
+import { get, create, update, queryCategoryTree } from '../../services/category'
 
 export default {
 
@@ -8,7 +8,7 @@ export default {
 
   state: {
     item: {},
-    allCategory : [],
+    allCategory: [],
   },
 
   subscriptions: {
@@ -34,6 +34,17 @@ export default {
     *query ({
       payload,
     }, { call, put }) {
+      const treeData = yield call(queryCategoryTree)
+      if (treeData.success) {
+        yield put({
+          type: 'allCategoryAndClearItem',
+          payload: {
+            allCategory: treeData.data,
+          },
+        })
+      } else {
+        throw treeData
+      }
       const data = yield call(get, payload)
       const { success, message, status, ...other } = data
       if (success) {
@@ -100,8 +111,9 @@ export default {
       const { allCategory } = payload
       return {
         ...state,
+        item: {},
         allCategory,
       }
-    }
+    },
   },
 }

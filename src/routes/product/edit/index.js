@@ -2,12 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
-import { Form, Input, Row, Col, Button, Modal, Radio, InputNumber, Select } from 'antd'
+import styles from './index.less'
+import { Upload, Icon, Form, Input, Row, Col, Button, Modal, Radio, InputNumber, Select } from 'antd'
 
 const FormItem = Form.Item
 const confirm = Modal.confirm
 const RadioGroup = Radio.Group
-const Option = Select.Option
 
 const formItemLayout = {
   labelCol: {
@@ -65,6 +65,13 @@ const Edit = ({
     })
   }
 
+  const uploadButton = (
+    <div>
+      <Icon type="plus" />
+      <div className="ant-upload-text">上传</div>
+    </div>
+  )
+
   return (
     <div className="content-inner">
       <Form layout="horizontal">
@@ -111,7 +118,23 @@ const Edit = ({
             {getFieldDecorator('pics', {
               initialValue: item.pics,
               rules: [],
-            })(<Input />)}
+            })(<Input type="hidden" />)}
+          <div className="clearfix">
+            <Upload
+              action="http://upload-z2.qiniu.com"
+              listType="picture-card"
+              fileList={fileList}
+              data={upload}
+              beforeUpload={beforeUpload}
+              onPreview={this.handlePreview}
+              onChange={handleChange}
+            >
+              {fileList.length >= 3 ? null : uploadButton}
+            </Upload>
+            <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
+              <img alt="example" style={{ width: '100%' }} src={previewImage} />
+            </Modal>
+          </div>
         </FormItem>
         <FormItem label="标签" hasFeedback {...formItemLayout}>
             {getFieldDecorator('tags', {

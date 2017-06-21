@@ -1,9 +1,10 @@
 import React from 'react'
-import Qiniu from 'react-qiniu'
+// import Qiniu from 'react-qiniu'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { QINIU_IMG_HOST } from '../../../utils/config'
 import { connect } from 'dva'
+import QiniuUploader from '../../../components/Uploader/QiniuUploader'
 import { Form, Input, InputNumber, Row, Col, Button, Modal } from 'antd'
 
 const FormItem = Form.Item
@@ -28,24 +29,6 @@ const Edit = ({
   },
 }) => {
   const { item, upload } = brandDetail
-
-  function onDrop (files) {
-    console.log(files)
-  }
-
-  function onUpload (files) {
-    files.map((f) => {
-      f.onprogress = function (e) {
-        console.log(e.percent)
-        if (e.percent >= 100) {
-          dispatch({
-            type: 'brandDetail/logoShow',
-          })
-        }
-      }
-      return f
-    })
-  }
 
   function handleOk () {
     validateFields((errors) => {
@@ -83,34 +66,47 @@ const Edit = ({
     })
   }
 
+  let handleChange = (info) => {
+    if (info.file.status === 'done') {
+      dispatch({
+        type: 'brandDetail/logoShow',
+      })
+    }
+  }
+
   return (
     <div className="content-inner">
       <Form layout="horizontal">
         <FormItem label="">
-            {getFieldDecorator('id', {
-              initialValue: item.id,
-            })(<Input type="hidden" />)}
+          {getFieldDecorator('id', {
+            initialValue: item.id,
+          })(<Input type="hidden" />)}
         </FormItem>
         <FormItem label="品牌名" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('name', {
-              initialValue: item.name,
-              rules: [],
-            })(<Input />)}
+          {getFieldDecorator('name', {
+            initialValue: item.name,
+            rules: [],
+          })(<Input />)}
         </FormItem>
         <FormItem label="品牌logo" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('logo', {
-              initialValue: item.logo,
-              rules: [],
-            })(<Input type="hidden" />)}
-          <Qiniu uploadUrl="http://upload-z2.qiniu.com" uploadKey={upload.uploadKey} onDrop={onDrop} size={210} token={upload.token} onUpload={onUpload}>
-            {item.logo ? <img src={`${QINIU_IMG_HOST}/${item.logo}_detail`} alt="" /> : <div>拖拽文件到此处上传</div>}
-          </Qiniu>
+          {getFieldDecorator('logo', {
+            initialValue: item.logo,
+            rules: [],
+          })(<Input type="hidden" />)}
+          <QiniuUploader
+            imageType="image/jpeg"
+            uploadLimit={2}
+            handleChange={handleChange}
+            token={upload.token}
+            uploadKey={upload.key}
+            defaultImageUrl={item.logo ? `${QINIU_IMG_HOST}/${item.logo}_detail` : undefined}
+          />
         </FormItem>
         <FormItem label="显示位置" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('position', {
-              initialValue: item.position,
-              rules: [],
-            })(<InputNumber min={1} step={1} />)}
+          {getFieldDecorator('position', {
+            initialValue: item.position,
+            rules: [],
+          })(<InputNumber min={1} step={1} />)}
         </FormItem>
         <Row>
           <Col span={24} style={{ textAlign: 'right' }}>

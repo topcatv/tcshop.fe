@@ -10,7 +10,7 @@ export default {
   state: {
     list: [],
     currentItem: {},
-    allCategory : [],
+    allCategory: [],
     modalType: 'create',
     pagination: {
       showSizeChanger: true,
