@@ -1,6 +1,7 @@
 import pathToRegexp from 'path-to-regexp'
 import { routerRedux } from 'dva/router'
-import { get, create, update, getUpToken } from '../../services/brand'
+import { get, create, update } from '../../services/brand'
+import { getUpToken } from '../../services/app'
 
 export default {
 
@@ -92,6 +93,24 @@ export default {
         throw data
       }
     },
+    *logoShow ({ payload }, { call, put }) {
+      const data = yield call(getUpToken, payload)
+      if (data.success) {
+        yield put({
+          type: 'setLogo',
+          payload: {},
+        })
+        yield put({
+          type: 'setUpToken',
+          payload: {
+            token: data.data,
+            key: data.uploadKey,
+          },
+        })
+      } else {
+        throw data
+      }
+    },
   },
 
   reducers: {
@@ -114,7 +133,7 @@ export default {
         upload: payload,
       }
     },
-    logoShow (state) {
+    setLogo (state) {
       return {
         ...state,
         item: {

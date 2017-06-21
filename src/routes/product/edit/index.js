@@ -2,8 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
-import styles from './index.less'
-import { Upload, Icon, Form, Input, Row, Col, Button, Modal, Radio, InputNumber, Select } from 'antd'
+import { QINIU_IMG_HOST } from '../../../utils/config'
+import QiniuUploader from '../../../components/Uploader/QiniuUploader'
+import { Form, Input, Row, Col, Button, Modal, Radio, InputNumber, Select } from 'antd'
 
 const FormItem = Form.Item
 const confirm = Modal.confirm
@@ -27,7 +28,7 @@ const Edit = ({
     getFieldsValue,
   },
 }) => {
-  const { item } = productDetail
+  const { item, upload } = productDetail
 
   function handleOk () {
     validateFields((errors) => {
@@ -65,12 +66,29 @@ const Edit = ({
     })
   }
 
-  const uploadButton = (
-    <div>
-      <Icon type="plus" />
-      <div className="ant-upload-text">上传</div>
-    </div>
-  )
+  let handleChange = (info) => {
+    // if (_.every(info.fileList, ['status', 'done'])) {
+    //   dispatch({
+    //     type: 'brandDetail/logoShow',
+    //   })
+    // }
+    if (info.file.status === 'done') {
+      dispatch({
+        type: 'productDetail/logoShow',
+      })
+    }
+  }
+
+  let fileList = []
+
+  if (item.pics) {
+    fileList = [{
+      uid: item.pics,
+      name: `${item.pics}_detail`,
+      status: 'done',
+      url: `${QINIU_IMG_HOST}/${item.pics}_detail`,
+    }]
+  }
 
   return (
     <div className="content-inner">
@@ -119,22 +137,15 @@ const Edit = ({
               initialValue: item.pics,
               rules: [],
             })(<Input type="hidden" />)}
-          <div className="clearfix">
-            <Upload
-              action="http://upload-z2.qiniu.com"
-              listType="picture-card"
-              fileList={fileList}
-              data={upload}
-              beforeUpload={beforeUpload}
-              onPreview={this.handlePreview}
-              onChange={handleChange}
-            >
-              {fileList.length >= 3 ? null : uploadButton}
-            </Upload>
-            <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
-              <img alt="example" style={{ width: '100%' }} src={previewImage} />
-            </Modal>
-          </div>
+          <QiniuUploader
+            imageType="image/jpeg"
+            uploadLimit={2}
+            handleChange={handleChange}
+            token={upload.token}
+            uploadKey={upload.key}
+            fileList={fileList}
+            uploadType="single"
+          />
         </FormItem>
         <FormItem label="标签" hasFeedback {...formItemLayout}>
             {getFieldDecorator('tags', {

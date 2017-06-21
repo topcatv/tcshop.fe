@@ -25,3 +25,11 @@ export async function query (params) {
     data: params,
   })
 }
+
+export async function getUpToken (params) {
+  return request({
+    url: '/qiniu/uptoken',
+    method: 'get',
+    data: params,
+  })
+}

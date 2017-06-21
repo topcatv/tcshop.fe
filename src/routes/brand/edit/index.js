@@ -67,11 +67,27 @@ const Edit = ({
   }
 
   let handleChange = (info) => {
+    // if (_.every(info.fileList, ['status', 'done'])) {
+    //   dispatch({
+    //     type: 'brandDetail/logoShow',
+    //   })
+    // }
     if (info.file.status === 'done') {
       dispatch({
         type: 'brandDetail/logoShow',
       })
     }
+  }
+
+  let fileList = []
+
+  if (item.logo) {
+    fileList = [{
+      uid: item.logo,
+      name: `${item.logo}_detail`,
+      status: 'done',
+      url: `${QINIU_IMG_HOST}/${item.logo}_detail`,
+    }]
   }
 
   return (
@@ -99,7 +115,8 @@ const Edit = ({
             handleChange={handleChange}
             token={upload.token}
             uploadKey={upload.key}
-            defaultImageUrl={item.logo ? `${QINIU_IMG_HOST}/${item.logo}_detail` : undefined}
+            fileList={fileList}
+            uploadType="single"
           />
         </FormItem>
         <FormItem label="显示位置" hasFeedback {...formItemLayout}>

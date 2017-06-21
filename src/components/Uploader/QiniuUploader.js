@@ -24,27 +24,55 @@ class QiniuUploader extends React.Component {
     return isJPG && isLt2M
   }
 
+  uploadButton = (
+    <div>
+      <Icon type="plus" />
+      <div className="ant-upload-text">上传</div>
+    </div>
+  )
+
+  imagesRender = (fileList, uploadType) => {
+    if (uploadType === 'single') {
+      if (fileList && fileList.length >= 1) {
+        let image = fileList[0]
+        return (image.url ? <img src={image.url} alt={image.name} className={styles.avatar} /> : <Icon type="plus" className={styles.avatar_uploader_trigger} />)
+      }
+      return (<Icon type="plus" className={styles.avatar_uploader_trigger} />)
+    }
+    if (fileList && fileList.length >= 1) {
+      return fileList.length >= 3 ? null : this.uploadButton
+    }
+    return null
+  }
+
   render () {
-    const { token, uploadKey, handleChange, defaultImageUrl } = this.props
-    return (
-      <Upload
-        className={styles.avatar_uploader}
-        name="file"
-        showUploadList={false}
-        action="http://upload-z2.qiniu.com"
-        data={{
-          token,
-          key: uploadKey,
-        }}
-        beforeUpload={this.beforeUpload}
-        onChange={handleChange}
-      >
-        {
-          defaultImageUrl ?
-            <img src={defaultImageUrl} alt="" className={styles.avatar} /> :
-            <Icon type="plus" className={styles.avatar_uploader_trigger} />
+    const { token, uploadKey, handleChange, fileList, uploadType } = this.props
+    let uploadProp = {
+      className: styles.avatar_uploader,
+      name: 'file',
+      showUploadList: fileList.length > 1,
+      action: 'http://upload-z2.qiniu.com',
+      data: {
+        token,
+        key: uploadKey,
+      },
+      beforeUpload: this.beforeUpload,
+      onChange: (fl) => {
+        handleChange(fl)
+        if (fileList.length > 1) {
+          this.setState({ fileList: fl.slice() })
         }
-      </Upload>
+      },
+    }
+    if (fileList.length > 1) {
+      uploadProp.fileList = fileList
+    }
+    return (
+      <div className="clearfix">
+        <Upload {...uploadProp} >
+          {this.imagesRender(fileList, uploadType)}
+        </Upload>
+      </div>
     )
   }
 }
@@ -54,7 +82,8 @@ QiniuUploader.propTypes = {
   token: PropTypes.string,
   uploadKey: PropTypes.string,
   imageType: PropTypes.string,
-  defaultImageUrl: PropTypes.string,
+  fileList: PropTypes.array,
+  uploadType: PropTypes.string,
   handleChange: PropTypes.func,
 }
 
