@@ -61,7 +61,6 @@ const Edit = ({
       },
     })
   }
-
   return (
     <div className="content-inner">
       <Form layout="horizontal">
@@ -71,20 +70,19 @@ const Edit = ({
             })(<Input type="hidden" />)}
         </FormItem>
         <FormItem label="父分类" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('parentId', {
+          {getFieldDecorator('parentId', {
               initialValue: `${item.parentId ? item.parentId : ''}`,
               rules: [],
-            })(
-              <TreeSelect
-                showSearch
-                style={{ width: 300 }}
-                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                placeholder="请选择父分类"
-                allowClear
-                treeData={allCategory}
-                treeDefaultExpandAll
-              />
-            )}
+            })(<TreeSelect
+              showSearch
+              style={{ width: 300 }}
+              dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+              placeholder="Please select"
+              allowClear
+              treeData={allCategory}
+              treeDefaultExpandAll
+            >
+            </TreeSelect>)}
         </FormItem>
         <FormItem label="分类名称" hasFeedback {...formItemLayout}>
             {getFieldDecorator('name', {
