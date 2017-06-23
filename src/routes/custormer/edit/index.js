@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { QINIU_IMG_HOST } from '../../../utils/config'
-import { Form, Input, Row, Col, Button,Modal } from 'antd'
+import { Form, Input, Row, Col, Button, Modal } from 'antd'
 
 const FormItem = Form.Item
 const confirm = Modal.confirm
@@ -29,8 +29,7 @@ const Edit = ({
     getFieldValue,
   },
 }) => {
-  const { item,modalType } = custormerDetail
-
+  const { item } = custormerDetail
   function handleOk () {
     validateFields((errors) => {
       if (errors) {
@@ -135,14 +134,14 @@ const Edit = ({
         </FormItem>
         <FormItem label="密码" hasFeedback {...formItemLayout}>
           {getFieldDecorator('password', {
-            rules: passwordRequire(modalType ==='create'),
+            rules: passwordRequire(!item.id),
           })(
             <Input type="password" />
           )}
         </FormItem>
         <FormItem label="确认密码" hasFeedback {...formItemLayout}>
           {getFieldDecorator('confirm', {
-            rules: confirmRequire(modalType === 'update'),
+            rules: confirmRequire(item.id),
           })(
             <Input type="password" onBlur={handleConfirmBlur} />
           )}

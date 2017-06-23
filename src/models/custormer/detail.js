@@ -8,7 +8,6 @@ export default {
 
   state: {
     item: {},
-    modalType: 'update',
   },
 
   subscriptions: {
@@ -47,6 +46,14 @@ export default {
         throw data
       }
     },
+     *preparForCreate ({
+      payload,
+    }, { call, put }) {
+      yield put({
+        type: 'clearItem',
+        payload: {},
+      })
+    },
     *create ({ payload }, { call, put }) {
       const data = yield call(create, payload)
       if (data.success) {
@@ -73,6 +80,12 @@ export default {
       return {
         ...state,
         item,
+      }
+    },
+      clearItem (state, { payload }) {
+      return {
+        ...state,
+        item: {},
       }
     },
   },
