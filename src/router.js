@@ -184,6 +184,40 @@ const Routers = function ({ history, app }) {
             }, 'category-detail')
           },
         },
+        {
+          path: 'custormer',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/custormer'))
+              cb(null, require('./routes/custormer/'))
+            }, 'custormer')
+          },
+        },
+        {
+          path: 'custormer/create',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/custormer/detail'))
+              cb(null, require('./routes/custormer/edit/'))
+            }, 'custormer-create')
+          },
+        }, {
+          path: 'custormer/edit/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/custormer/detail'))
+              cb(null, require('./routes/custormer/edit/'))
+            }, 'custormer-edit')
+          },
+        }, {
+          path: 'custormer/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/custormer/detail'))
+              cb(null, require('./routes/custormer/detail/'))
+            }, 'custormer-detail')
+          },
+        },
         /* , {
           path: 'request',
           getComponent (nextState, cb) {

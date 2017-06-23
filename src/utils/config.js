@@ -27,8 +27,10 @@ module.exports = {
     products: '/product',
     product: '/product/:id',
     dashboard: '/dashboard',
-    categorys : '/category',
+    categorys: '/category',
     category: '/category/:id',
     categoryTree: '/category/tree',
+    custormers: '/custormer',
+    custormer: '/custormer/:id',
   },
 }
