@@ -1,18 +1,22 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Upload, Icon, Modal } from 'antd'
+import styles from './QiniuPicturesWall.less'
+import _ from 'lodash'
+import { Upload, Icon, Modal, message } from 'antd'
 
 class QiniuPicturesWall extends React.Component {
   state = {
     previewVisible: false,
     previewImage: '',
-    fileList: [{
-      uid: -1,
-      name: 'xxx.png',
-      status: 'done',
-      url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-    }],
-  };
+    fileList: this.props.fileList,
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    console.log(nextProps.fileList, this.props.fileList, _.differenceWith(nextProps.fileList, this.props.fileList, (value, other) => { return value.url === other.url }))
+    if (_.differenceWith(nextProps.fileList, this.props.fileList, (value, other) => { return value.url === other.url }).length > 0) {
+      this.setState({ fileList: nextProps.fileList })
+    }
+  }
 
   handleCancel = () => this.setState({ previewVisible: false })
 
@@ -23,26 +27,57 @@ class QiniuPicturesWall extends React.Component {
     })
   }
 
-  handleChange = ({ fileList }) => this.setState({ fileList })
+  beforeUpload = (file) => {
+    const isJPG = file.type === this.props.imageType
+    if (!isJPG) {
+      message.error('只能上传JPG图片')
+    }
+    const isLt2M = file.size / 1024 / 1024 < this.props.uploadLimit
+    if (!isLt2M) {
+      message.error('图片大小必须小于2M')
+    }
+    return isJPG && isLt2M
+  }
+
+  renderFileList = (uploadButton) => {
+    if (!this.props.fileCount) {
+      return uploadButton
+    }
+    return (this.state.fileList.length >= this.props.fileCount ? null : uploadButton)
+  }
 
   render () {
-    const { previewVisible, previewImage, fileList } = this.state
+    const { token, uploadKey, handleChange, handleRemove } = this.props
+    const { previewVisible, previewImage } = this.state
     const uploadButton = (
       <div>
         <Icon type="plus" />
-        <div className="ant-upload-text">Upload</div>
+        <div className={styles['ant-upload-text']}>上传</div>
       </div>
     )
+    const uploadProp = {
+      name: 'file',
+      action: 'http://upload-z2.qiniu.com',
+      data: {
+        token,
+        key: uploadKey,
+      },
+      beforeUpload: this.beforeUpload,
+      onChange: (fl) => {
+        handleChange(fl)
+        this.setState({ fileList: fl.fileList.slice() })
+      },
+      onRemove: handleRemove,
+    }
     return (
       <div className="clearfix">
         <Upload
-          action="//jsonplaceholder.typicode.com/posts/"
+          {...uploadProp}
           listType="picture-card"
-          fileList={fileList}
+          fileList={this.state.fileList}
           onPreview={this.handlePreview}
-          onChange={this.handleChange}
         >
-          {fileList.length >= 3 ? null : uploadButton}
+          {this.renderFileList(uploadButton)}
         </Upload>
         <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
           <img alt="example" style={{ width: '100%' }} src={previewImage} />
@@ -50,6 +85,17 @@ class QiniuPicturesWall extends React.Component {
       </div>
     )
   }
+}
+
+QiniuPicturesWall.propTypes = {
+  uploadLimit: PropTypes.number,
+  token: PropTypes.string,
+  uploadKey: PropTypes.string,
+  imageType: PropTypes.string,
+  fileList: PropTypes.array,
+  handleChange: PropTypes.func,
+  handleRemove: PropTypes.func,
+  fileCount: PropTypes.number,
 }
 
 export default QiniuPicturesWall

@@ -1,10 +1,9 @@
 import React from 'react'
-// import Qiniu from 'react-qiniu'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { QINIU_IMG_HOST } from '../../../utils/config'
 import { connect } from 'dva'
-import QiniuUploader from '../../../components/Uploader/QiniuUploader'
+import QiniuPicturesWall from '../../../components/Uploader/QiniuPicturesWall'
 import { Form, Input, InputNumber, Row, Col, Button, Modal } from 'antd'
 
 const FormItem = Form.Item
@@ -67,11 +66,6 @@ const Edit = ({
   }
 
   let handleChange = (info) => {
-    // if (_.every(info.fileList, ['status', 'done'])) {
-    //   dispatch({
-    //     type: 'brandDetail/logoShow',
-    //   })
-    // }
     if (info.file.status === 'done') {
       dispatch({
         type: 'brandDetail/logoShow',
@@ -79,15 +73,15 @@ const Edit = ({
     }
   }
 
-  let fileList = []
+  const fileList = []
 
   if (item.logo) {
-    fileList = [{
+    fileList.push({
       uid: item.logo,
       name: `${item.logo}_detail`,
       status: 'done',
       url: `${QINIU_IMG_HOST}/${item.logo}_detail`,
-    }]
+    })
   }
 
   return (
@@ -109,14 +103,14 @@ const Edit = ({
             initialValue: item.logo,
             rules: [],
           })(<Input type="hidden" />)}
-          <QiniuUploader
+          <QiniuPicturesWall
             imageType="image/jpeg"
             uploadLimit={2}
             handleChange={handleChange}
             token={upload.token}
             uploadKey={upload.key}
             fileList={fileList}
-            uploadType="single"
+            fileCount={1}
           />
         </FormItem>
         <FormItem label="显示位置" hasFeedback {...formItemLayout}>

@@ -2,6 +2,7 @@ import pathToRegexp from 'path-to-regexp'
 import { routerRedux } from 'dva/router'
 import { get, create, update } from '../../services/product'
 import { getUpToken } from '../../services/app'
+import _ from 'lodash'
 
 export default {
 
@@ -43,6 +44,7 @@ export default {
       const data = yield call(get, payload)
       const { success, message, status, ...other } = data
       if (success) {
+        console.log(other.data)
         yield put({
           type: 'querySuccess',
           payload: {
@@ -55,7 +57,7 @@ export default {
     },
     *preparForCreate ({
       payload,
-    }, { call, put }) {
+    }, { put }) {
       yield put({
         type: 'clearItem',
         payload: {},
@@ -93,11 +95,11 @@ export default {
         throw data
       }
     },
-    *logoShow ({ payload }, { call, put }) {
+    *picShow ({ payload }, { call, put }) {
       const data = yield call(getUpToken, payload)
       if (data.success) {
         yield put({
-          type: 'setLogo',
+          type: 'setPics',
           payload: {},
         })
         yield put({
@@ -115,16 +117,29 @@ export default {
 
   reducers: {
     querySuccess (state, { payload }) {
-      const { item } = payload
+      console.log(payload)
       return {
         ...state,
-        item,
+        item: payload.item,
       }
     },
-    clearItem (state, { payload }) {
+    clearItem (state) {
       return {
         ...state,
         item: {},
+      }
+    },
+    removePic (state, { picKey }) {
+      let pics = _.split(state.item.pics, ',')
+      pics = _.remove(pics, (pic) => {
+        return pic === picKey
+      })
+      return {
+        ...state,
+        item: {
+          ...state.item,
+          pics: _.join(pics, ','),
+        },
       }
     },
     setUpToken (state, { payload }) {
@@ -133,12 +148,13 @@ export default {
         upload: payload,
       }
     },
-    setLogo (state) {
+    setPics (state) {
+      const pics = state.item.pics ? `${state.item.pics},${state.upload.key}` : state.upload.key
       return {
         ...state,
         item: {
           ...state.item,
-          pics: state.upload.key,
+          pics,
         },
       }
     },

@@ -1,16 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styles from './QiniuUploader.less'
+import QiniuPicturesWall from './QiniuPicturesWall'
 import { Upload, Icon, message } from 'antd'
 
 class QiniuUploader extends React.Component {
   state = {}
-
-  getBase64 = (img, callback) => {
-    const reader = new FileReader()
-    reader.addEventListener('load', () => callback(reader.result))
-    reader.readAsDataURL(img)
-  }
 
   beforeUpload = (file) => {
     const isJPG = file.type === this.props.imageType
@@ -24,25 +19,14 @@ class QiniuUploader extends React.Component {
     return isJPG && isLt2M
   }
 
-  uploadButton = (
-    <div>
-      <Icon type="plus" />
-      <div className="ant-upload-text">上传</div>
-    </div>
-  )
+  uploadButton = <Icon type="plus" className={styles.avatar_uploader_trigger} />
 
-  imagesRender = (fileList, uploadType) => {
-    if (uploadType === 'single') {
-      if (fileList && fileList.length >= 1) {
-        let image = fileList[0]
-        return (image.url ? <img src={image.url} alt={image.name} className={styles.avatar} /> : <Icon type="plus" className={styles.avatar_uploader_trigger} />)
-      }
-      return (<Icon type="plus" className={styles.avatar_uploader_trigger} />)
-    }
+  imagesRender = (fileList) => {
     if (fileList && fileList.length >= 1) {
-      return fileList.length >= 3 ? null : this.uploadButton
+      let image = fileList[0]
+      return (image.url ? <img src={image.url} alt={image.name} className={styles.avatar} /> : <Icon type="plus" className={styles.avatar_uploader_trigger} />)
     }
-    return null
+    return this.uploadButton
   }
 
   render () {
@@ -59,20 +43,20 @@ class QiniuUploader extends React.Component {
       beforeUpload: this.beforeUpload,
       onChange: (fl) => {
         handleChange(fl)
-        if (fileList.length > 1) {
-          this.setState({ fileList: fl.slice() })
-        }
       },
     }
     if (fileList.length > 1) {
       uploadProp.fileList = fileList
     }
-    return (
-      <div className="clearfix">
+    if (uploadType === 'single') {
+      return (
         <Upload {...uploadProp} >
-          {this.imagesRender(fileList, uploadType)}
+          {this.imagesRender(fileList)}
         </Upload>
-      </div>
+      )
+    }
+    return (
+      <QiniuPicturesWall {...uploadProp} />
     )
   }
 }
@@ -85,6 +69,8 @@ QiniuUploader.propTypes = {
   fileList: PropTypes.array,
   uploadType: PropTypes.string,
   handleChange: PropTypes.func,
+  handleRemove: PropTypes.func,
+  fileCount: PropTypes.number,
 }
 
 export default QiniuUploader

@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { QINIU_IMG_HOST } from '../../../utils/config'
-import QiniuUploader from '../../../components/Uploader/QiniuUploader'
+import QiniuPicturesWall from '../../../components/Uploader/QiniuPicturesWall'
+import _ from 'lodash'
 import { Form, Input, Row, Col, Button, Modal, Radio, InputNumber, Select } from 'antd'
 
 const FormItem = Form.Item
@@ -39,6 +40,7 @@ const Edit = ({
         ...getFieldsValue(),
         id: item.id,
       }
+      data.tags = _.join(data.tags, ',')
       if (data.id) {
         dispatch({
           type: 'productDetail/update',
@@ -66,28 +68,34 @@ const Edit = ({
     })
   }
 
-  let handleChange = (info) => {
-    // if (_.every(info.fileList, ['status', 'done'])) {
-    //   dispatch({
-    //     type: 'brandDetail/logoShow',
-    //   })
-    // }
-    if (info.file.status === 'done') {
+  const handleChange = (info) => {
+    if (info.fileList.length > 0 && _.every(info.fileList, ['status', 'done'])) {
       dispatch({
-        type: 'productDetail/logoShow',
+        type: 'productDetail/picShow',
+        payload: { ns: 'product' },
       })
     }
+  }
+
+  const handleRemove = (file) => {
+    dispatch({
+      type: 'productDetail/removePic',
+      payload: { picKey: file.response.key },
+    })
+    return true
   }
 
   let fileList = []
 
   if (item.pics) {
-    fileList = [{
-      uid: item.pics,
-      name: `${item.pics}_detail`,
-      status: 'done',
-      url: `${QINIU_IMG_HOST}/${item.pics}_detail`,
-    }]
+    _.each(_.split(item.pics, ','), (pic) => {
+      fileList.push({
+        uid: pic,
+        name: `${pic}_detail`,
+        status: 'done',
+        url: `${QINIU_IMG_HOST}/${pic}_detail`,
+      })
+    })
   }
 
   return (
@@ -99,8 +107,8 @@ const Edit = ({
             })(<Input type="hidden" />)}
         </FormItem>
         <FormItem label="品牌" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('brand_id', {
-              initialValue: item.brand_id,
+            {getFieldDecorator('brandId', {
+              initialValue: item.brandId,
               rules: [],
             })(<Input />)}
         </FormItem>
@@ -137,13 +145,14 @@ const Edit = ({
               initialValue: item.pics,
               rules: [],
             })(<Input type="hidden" />)}
-          <QiniuUploader
+          <QiniuPicturesWall
             imageType="image/jpeg"
             uploadLimit={2}
             handleChange={handleChange}
             token={upload.token}
             uploadKey={upload.key}
             fileList={fileList}
+            handleRemove={handleRemove}
             uploadType="single"
           />
         </FormItem>
@@ -154,6 +163,7 @@ const Edit = ({
             })(
               <Select
                 mode="tags"
+                tokenSeparators={[',']}
                 style={{ width: '100%' }}
                 searchPlaceholder="标签"
               />
