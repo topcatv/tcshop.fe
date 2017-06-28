@@ -38,6 +38,7 @@ const Edit = ({
         ...getFieldsValue(),
         id: item.id,
       }
+      data.logo = data.logo[0].uid
       if (data.id) {
         dispatch({
           type: 'brandDetail/update',
@@ -68,7 +69,10 @@ const Edit = ({
   let handleChange = (info) => {
     if (info.file.status === 'done') {
       dispatch({
-        type: 'brandDetail/logoShow',
+        type: 'brandDetail/setLogo',
+        payload: {
+          logo: info.file.response.key,
+        },
       })
     }
   }
@@ -100,18 +104,19 @@ const Edit = ({
         </FormItem>
         <FormItem label="品牌logo" hasFeedback {...formItemLayout}>
           {getFieldDecorator('logo', {
-            initialValue: item.logo,
+            initialValue: fileList,
+            valuePropName: 'fileList',
             rules: [],
-          })(<Input type="hidden" />)}
-          <QiniuPicturesWall
-            imageType="image/jpeg"
-            uploadLimit={2}
-            handleChange={handleChange}
-            token={upload.token}
-            uploadKey={upload.key}
-            fileList={fileList}
-            fileCount={1}
-          />
+          })(
+            <QiniuPicturesWall
+              imageType="image/jpeg"
+              uploadLimit={2}
+              handleChange={handleChange}
+              token={upload.token}
+              uploadKey={upload.key}
+              fileCount={1}
+            />
+          )}
         </FormItem>
         <FormItem label="显示位置" hasFeedback {...formItemLayout}>
           {getFieldDecorator('position', {

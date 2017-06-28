@@ -10,6 +10,7 @@ import { Form, Input, Row, Col, Button, Modal, Radio, InputNumber, Select } from
 const FormItem = Form.Item
 const confirm = Modal.confirm
 const RadioGroup = Radio.Group
+const Option = Select.Option
 
 const formItemLayout = {
   labelCol: {
@@ -41,6 +42,7 @@ const Edit = ({
         id: item.id,
       }
       data.tags = _.join(data.tags, ',')
+      data.pics = _.join(_.map(data.pics, (pic) => { return pic.uid }), ',')
       if (data.id) {
         dispatch({
           type: 'productDetail/update',
@@ -72,20 +74,17 @@ const Edit = ({
     if (info.fileList.length > 0 && _.every(info.fileList, ['status', 'done'])) {
       dispatch({
         type: 'productDetail/picShow',
-        payload: { ns: 'product' },
+        payload: {
+          ns: 'product',
+          pics: _.map(info.fileList, (f) => {
+            return f.response ? f.response.key : f.uid
+          }),
+        },
       })
     }
   }
 
-  const handleRemove = (file) => {
-    dispatch({
-      type: 'productDetail/removePic',
-      payload: { picKey: file.response.key },
-    })
-    return true
-  }
-
-  let fileList = []
+  const fileList = []
 
   if (item.pics) {
     _.each(_.split(item.pics, ','), (pic) => {
@@ -98,6 +97,16 @@ const Edit = ({
     })
   }
 
+  let tags = _.split(item.tags, ',')
+  const children = []
+  _.each(tags, (tag) => {
+    if (tag !== '') {
+      children.push(<Option key={tag}>{tag}</Option>)
+    }
+  })
+  if (tags.length === 1 && tags[0] === '') {
+    tags = undefined
+  }
   return (
     <div className="content-inner">
       <Form layout="horizontal">
@@ -122,10 +131,16 @@ const Edit = ({
                 },
               ],
             })(
-              <RadioGroup>
-                <Radio value={1}>实物商品</Radio>
-                <Radio value={2}>虚拟商品</Radio>
-              </RadioGroup>
+              <RadioGroup options={[
+                {
+                  label: '实物商品',
+                  value: '1',
+                },
+                {
+                  label: '虚拟商品',
+                  value: '2',
+                },
+              ]} />
             )}
         </FormItem>
         <FormItem label="编码" hasFeedback {...formItemLayout}>
@@ -142,23 +157,22 @@ const Edit = ({
         </FormItem>
         <FormItem label="图片" hasFeedback {...formItemLayout}>
             {getFieldDecorator('pics', {
-              initialValue: item.pics,
+              initialValue: fileList,
+              valuePropName: 'fileList',
               rules: [],
-            })(<Input type="hidden" />)}
-          <QiniuPicturesWall
-            imageType="image/jpeg"
-            uploadLimit={2}
-            handleChange={handleChange}
-            token={upload.token}
-            uploadKey={upload.key}
-            fileList={fileList}
-            handleRemove={handleRemove}
-            uploadType="single"
-          />
+            })(
+              <QiniuPicturesWall
+                imageType="image/jpeg"
+                uploadLimit={2}
+                handleChange={handleChange}
+                token={upload.token}
+                uploadKey={upload.key}
+              />
+            )}
         </FormItem>
         <FormItem label="标签" hasFeedback {...formItemLayout}>
             {getFieldDecorator('tags', {
-              initialValue: item.tags,
+              initialValue: tags,
               rules: [],
             })(
               <Select
@@ -166,7 +180,9 @@ const Edit = ({
                 tokenSeparators={[',']}
                 style={{ width: '100%' }}
                 searchPlaceholder="标签"
-              />
+              >
+                {children}
+              </Select>
             )}
         </FormItem>
         <FormItem label="价格" hasFeedback {...formItemLayout}>

@@ -44,7 +44,6 @@ export default {
       const data = yield call(get, payload)
       const { success, message, status, ...other } = data
       if (success) {
-        console.log(other.data)
         yield put({
           type: 'querySuccess',
           payload: {
@@ -100,7 +99,9 @@ export default {
       if (data.success) {
         yield put({
           type: 'setPics',
-          payload: {},
+          payload: {
+            pics: payload.pics,
+          },
         })
         yield put({
           type: 'setUpToken',
@@ -117,7 +118,6 @@ export default {
 
   reducers: {
     querySuccess (state, { payload }) {
-      console.log(payload)
       return {
         ...state,
         item: payload.item,
@@ -148,13 +148,12 @@ export default {
         upload: payload,
       }
     },
-    setPics (state) {
-      const pics = state.item.pics ? `${state.item.pics},${state.upload.key}` : state.upload.key
+    setPics (state, { payload }) {
       return {
         ...state,
         item: {
           ...state.item,
-          pics,
+          pics: _.join(payload.pics, ','),
         },
       }
     },

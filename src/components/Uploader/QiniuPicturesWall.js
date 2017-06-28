@@ -12,7 +12,6 @@ class QiniuPicturesWall extends React.Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    console.log(nextProps.fileList, this.props.fileList, _.differenceWith(nextProps.fileList, this.props.fileList, (value, other) => { return value.url === other.url }))
     if (_.differenceWith(nextProps.fileList, this.props.fileList, (value, other) => { return value.url === other.url }).length > 0) {
       this.setState({ fileList: nextProps.fileList })
     }
@@ -30,13 +29,13 @@ class QiniuPicturesWall extends React.Component {
   beforeUpload = (file) => {
     const isJPG = file.type === this.props.imageType
     if (!isJPG) {
-      message.error('只能上传JPG图片')
+      message.error('上传图片格式不正确')
     }
-    const isLt2M = file.size / 1024 / 1024 < this.props.uploadLimit
-    if (!isLt2M) {
-      message.error('图片大小必须小于2M')
+    const isLt = file.size / 1024 / 1024 < this.props.uploadLimit
+    if (!isLt) {
+      message.error(`图片大小必须小于${this.props.uploadLimit}M`)
     }
-    return isJPG && isLt2M
+    return isJPG && isLt
   }
 
   renderFileList = (uploadButton) => {
@@ -47,7 +46,7 @@ class QiniuPicturesWall extends React.Component {
   }
 
   render () {
-    const { token, uploadKey, handleChange, handleRemove } = this.props
+    const { token, uploadKey, handleChange } = this.props
     const { previewVisible, previewImage } = this.state
     const uploadButton = (
       <div>
@@ -67,7 +66,6 @@ class QiniuPicturesWall extends React.Component {
         handleChange(fl)
         this.setState({ fileList: fl.fileList.slice() })
       },
-      onRemove: handleRemove,
     }
     return (
       <div className="clearfix">
@@ -94,7 +92,6 @@ QiniuPicturesWall.propTypes = {
   imageType: PropTypes.string,
   fileList: PropTypes.array,
   handleChange: PropTypes.func,
-  handleRemove: PropTypes.func,
   fileCount: PropTypes.number,
 }
 

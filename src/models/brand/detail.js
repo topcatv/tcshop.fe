@@ -55,7 +55,7 @@ export default {
     },
     *preparForCreate ({
       payload,
-    }, { call, put }) {
+    }, { put }) {
       yield put({
         type: 'clearItem',
         payload: {},
@@ -93,24 +93,6 @@ export default {
         throw data
       }
     },
-    *logoShow ({ payload }, { call, put }) {
-      const data = yield call(getUpToken, payload)
-      if (data.success) {
-        yield put({
-          type: 'setLogo',
-          payload: {},
-        })
-        yield put({
-          type: 'setUpToken',
-          payload: {
-            token: data.data,
-            key: data.uploadKey,
-          },
-        })
-      } else {
-        throw data
-      }
-    },
   },
 
   reducers: {
@@ -121,7 +103,7 @@ export default {
         item,
       }
     },
-    clearItem (state, { payload }) {
+    clearItem (state) {
       return {
         ...state,
         item: {},
@@ -133,12 +115,12 @@ export default {
         upload: payload,
       }
     },
-    setLogo (state) {
+    setLogo (state, { payload }) {
       return {
         ...state,
         item: {
           ...state.item,
-          logo: state.upload.key,
+          logo: payload.logo,
         },
       }
     },

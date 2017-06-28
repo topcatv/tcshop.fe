@@ -74,7 +74,6 @@ export default {
       }
     },
     *update ({ payload }, { select, call, put }) {
-      console.log(payload)
       const id = yield select(({ user }) => user.currentItem.id)
       const newUser = { ...payload, id }
       const data = yield call(update, newUser)
