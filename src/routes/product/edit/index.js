@@ -5,7 +5,8 @@ import { connect } from 'dva'
 import { QINIU_IMG_HOST } from '../../../utils/config'
 import QiniuPicturesWall from '../../../components/Uploader/QiniuPicturesWall'
 import _ from 'lodash'
-import { Form, Input, Row, Col, Button, Modal, Radio, InputNumber, Select } from 'antd'
+import styles from './index.less'
+import { Form, Input, Row, Col, Button, Modal, Radio, InputNumber, Select, Icon } from 'antd'
 
 const FormItem = Form.Item
 const confirm = Modal.confirm
@@ -28,6 +29,8 @@ const Edit = ({
     getFieldDecorator,
     validateFields,
     getFieldsValue,
+    getFieldValue,
+    setFieldsValue,
   },
 }) => {
   const { item, upload } = productDetail
@@ -106,6 +109,82 @@ const Edit = ({
   })
   if (tags.length === 1 && tags[0] === '') {
     tags = undefined
+  }
+
+  const formItemLayoutWithOutLabel = {
+    wrapperCol: {
+      xs: { span: 24, offset: 0 },
+      sm: { span: 18, offset: 6 },
+    },
+  }
+  const sku = _.zipWith(item.goodsName, item.goodsPrice, item.goodsStock, (name, price, stock) => {
+    return {
+      name,
+      price,
+      stock,
+    }
+  })
+  getFieldDecorator('skus', { initialValue: sku })
+  const skus = getFieldValue('skus')
+  const skuList = skus.map((s, index) => {
+    return (
+      <Row key={index}>
+        <Col span={4} offset={6}>
+          <FormItem hasFeedback>
+            {getFieldDecorator(`goodsname_${index}`, {
+              initialValue: s.name,
+              rules: [],
+            })(
+              <Input placeholder="规格" />
+            )}
+          </FormItem>
+        </Col>
+        <Col span={6} offset={2}>
+          <FormItem hasFeedback>
+            {getFieldDecorator(`goodsprice_${index}`, {
+              initialValue: s.price,
+              rules: [],
+            })(
+              <InputNumber
+                min={0}
+                precision={2}
+                placeholder="价格"
+              />
+            )}
+          </FormItem>
+        </Col>
+        <Col span={4}>
+          <FormItem hasFeedback>
+            {getFieldDecorator(`goodsstock_${index}`, {
+              initialValue: s.stock,
+              rules: [],
+            })(
+              <InputNumber
+                min={0}
+                precision={0}
+                placeholder="库存"
+              />
+            )}
+          </FormItem>
+        </Col>
+        <Col span={2}>
+          <Icon
+            className={styles['dynamic-delete-button']}
+            type="minus-circle-o"
+            disabled={sku.length === 1}
+          />
+        </Col>
+      </Row>
+    )
+  })
+  const addSku = () => {
+    const _skus = getFieldValue('skus')
+    const nextSkus = _skus.concat({})
+    // can use data-binding to set
+    // important! notify form to detect changes
+    setFieldsValue({
+      skus: nextSkus,
+    })
   }
   return (
     <div className="content-inner">
@@ -223,6 +302,12 @@ const Edit = ({
                 precision={2}
               />
             )}
+        </FormItem>
+        {skuList}
+        <FormItem {...formItemLayoutWithOutLabel}>
+          <Button type="dashed" onClick={addSku} style={{ width: '60%' }}>
+            <Icon type="plus" /> 添加规格
+          </Button>
         </FormItem>
         <Row>
           <Col span={24} style={{ textAlign: 'right' }}>
