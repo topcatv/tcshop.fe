@@ -33,7 +33,7 @@ const Edit = ({
     setFieldsValue,
   },
 }) => {
-  const { item, upload } = productDetail
+  const { item, upload,brands } = productDetail
 
   function handleOk () {
     validateFields((errors) => {
@@ -196,9 +196,13 @@ const Edit = ({
         </FormItem>
         <FormItem label="品牌" hasFeedback {...formItemLayout}>
             {getFieldDecorator('brandId', {
-              initialValue: item.brandId,
+               initialValue: `${item.brandId ? item.brandId : ''}`,
               rules: [],
-            })(<Input />)}
+            })(<Select     
+              placeholder="请选择品牌"
+            >
+        {brands.map(d => <Option key={d.id}>{d.name}</Option>)}
+      </Select>)}
         </FormItem>
         <FormItem label="商品类型" hasFeedback {...formItemLayout}>
             {getFieldDecorator('type', {

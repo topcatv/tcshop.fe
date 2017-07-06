@@ -1,6 +1,6 @@
 import pathToRegexp from 'path-to-regexp'
 import { routerRedux } from 'dva/router'
-import { get, create, update } from '../../services/product'
+import { get, create, update, queryBrands } from '../../services/product'
 import { getUpToken } from '../../services/app'
 import _ from 'lodash'
 
@@ -10,6 +10,7 @@ export default {
 
   state: {
     item: {},
+    brands: [],
     upload: {
       files: [],
       token: '',
@@ -56,11 +57,18 @@ export default {
     },
     *preparForCreate ({
       payload,
-    }, { put }) {
-      yield put({
-        type: 'clearItem',
-        payload: {},
-      })
+    }, { call, put }) {
+      const data = yield call(queryBrands)
+      if (data.success) {
+        yield put({
+          type: 'brandsAndClearItem',
+          payload: {
+            brands: data.data,
+          },
+        })
+      } else {
+        throw data
+      }
     },
     *create ({ payload }, { call, put }) {
       const data = yield call(create, payload)
@@ -127,6 +135,14 @@ export default {
       return {
         ...state,
         item: {},
+      }
+    },
+    brandsAndClearItem (state, { payload }) {
+      const { brands } = payload
+      return {
+        ...state,
+        item: {},
+        brands,
       }
     },
     removePic (state, { picKey }) {
