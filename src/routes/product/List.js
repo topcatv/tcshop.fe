@@ -6,6 +6,8 @@ import { Link } from 'dva/router'
 import AnimTableBody from '../../components/DataTable/AnimTableBody'
 import classnames from 'classnames'
 import styles from './List.less'
+import { QINIU_IMG_HOST } from '../../utils/config'
+import _ from 'lodash'
 
 const confirm = Modal.confirm
 
@@ -25,15 +27,16 @@ function List ({ onDeleteItem, onEditItem, location, ...tableProps }) {
 
   const columns = [
     {
-      title: 'id',
-      dataIndex: 'id',
-      key: 'id',
-      render: (text, record) => <Link to={`Product/${record.id}`}>{text}</Link>,
+      title: '图片',
+      dataIndex: 'pics',
+      key: 'pics',
+      render: (text) => <img src={`${QINIU_IMG_HOST}/${_.split(text, ',')[0]}?imageView2/1/w/48/h/48/format/jpg/q/70|imageslim`} alt="图片" />,
     },
     {
-      title: '品牌',
-      dataIndex: 'brandId',
-      key: 'brandId',
+      title: '商品名',
+      dataIndex: 'name',
+      key: 'name',
+      render: (text, record) => <Link to={`Product/${record.id}`}>{text}</Link>,
     },
     {
       title: '类型',
@@ -45,11 +48,6 @@ function List ({ onDeleteItem, onEditItem, location, ...tableProps }) {
       title: '商品编码',
       dataIndex: 'code',
       key: 'code',
-    },
-    {
-      title: '商品名',
-      dataIndex: 'name',
-      key: 'name',
     },
     {
       title: '商品标签',
@@ -65,11 +63,6 @@ function List ({ onDeleteItem, onEditItem, location, ...tableProps }) {
       title: '库存',
       dataIndex: 'stock',
       key: 'stock',
-    },
-    {
-      title: '描述',
-      dataIndex: 'description',
-      key: 'description',
     },
     {
       title: '运费',

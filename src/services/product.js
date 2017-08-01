@@ -49,3 +49,11 @@ export async function queryBrands (params) {
     data: params,
   })
 }
+
+export async function queryCategories (params) {
+  return request({
+    url: '/category',
+    method: 'get',
+    data: params,
+  })
+}

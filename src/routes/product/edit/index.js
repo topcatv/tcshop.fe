@@ -33,7 +33,7 @@ const Edit = ({
     setFieldsValue,
   },
 }) => {
-  const { item, upload,brands } = productDetail
+  const { item, upload, categories, brands } = productDetail
 
   function handleOk () {
     validateFields((errors) => {
@@ -124,14 +124,35 @@ const Edit = ({
       stock,
     }
   })
+  const priceChange = (value, index) => {
+    let skus = getFieldsValue()
+    let sum = value
+    _.forEach(skus, (v, k) => {
+      if (_.startsWith(k, 'goodsPrice[') && _.toInteger(_.replace(_.split(k, '[')[1]), ']', '') !== index) {
+        sum = sum + v
+      }
+    })
+    setFieldsValue({ price: sum })
+  }
+  const stockChange = (value, index) => {
+    let skus = getFieldValue('skus')
+    let sum = value
+    _.forEach(skus, (v, k) => {
+      if (_.startsWith(k, 'goodsStock[') && _.toInteger(_.replace(_.split(k, '[')[1]), ']', '') !== index) {
+        sum = sum + v
+      }
+    })
+    setFieldsValue({ stock: sum })
+  }
   getFieldDecorator('skus', { initialValue: sku })
   const skus = getFieldValue('skus')
+  const flag = true
   const skuList = skus.map((s, index) => {
     return (
       <Row key={index}>
         <Col span={4} offset={6}>
           <FormItem hasFeedback>
-            {getFieldDecorator(`goodsname_${index}`, {
+            {getFieldDecorator(`goodsName[${index}]`, {
               initialValue: s.name,
               rules: [],
             })(
@@ -141,7 +162,7 @@ const Edit = ({
         </Col>
         <Col span={6} offset={2}>
           <FormItem hasFeedback>
-            {getFieldDecorator(`goodsprice_${index}`, {
+            {getFieldDecorator(`goodsPrice[${index}]`, {
               initialValue: s.price,
               rules: [],
             })(
@@ -149,13 +170,14 @@ const Edit = ({
                 min={0}
                 precision={2}
                 placeholder="价格"
+                onChange={(value) => priceChange(value, index)}
               />
             )}
           </FormItem>
         </Col>
         <Col span={4}>
           <FormItem hasFeedback>
-            {getFieldDecorator(`goodsstock_${index}`, {
+            {getFieldDecorator(`goodsStock[${index}]`, {
               initialValue: s.stock,
               rules: [],
             })(
@@ -163,6 +185,7 @@ const Edit = ({
                 min={0}
                 precision={0}
                 placeholder="库存"
+                onChange={(value) => stockChange(value, index)}
               />
             )}
           </FormItem>
@@ -179,7 +202,11 @@ const Edit = ({
   })
   const addSku = () => {
     const _skus = getFieldValue('skus')
-    const nextSkus = _skus.concat({})
+    const nextSkus = _skus.concat({
+      name: '',
+      price: 0,
+      stock: 0,
+    })
     // can use data-binding to set
     // important! notify form to detect changes
     setFieldsValue({
@@ -194,15 +221,20 @@ const Edit = ({
               initialValue: item.id,
             })(<Input type="hidden" />)}
         </FormItem>
-        <FormItem label="品牌" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('brandId', {
-               initialValue: `${item.brandId ? item.brandId : ''}`,
-              rules: [],
-            })(<Select     
-              placeholder="请选择品牌"
+        <FormItem label="商品分类" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('categoryId', {
+              initialValue: `${item.categoryId ? item.categoryId : ''}`,
+              rules: [
+                {
+                  required: true,
+                  message: '请选择商品分类',
+                },
+              ],
+            })(<Select
+              placeholder="请选择分类"
             >
-        {brands.map(d => <Option key={d.id}>{d.name}</Option>)}
-      </Select>)}
+              {categories.map(d => <Option key={d.id}>{d.name}</Option>)}
+            </Select>)}
         </FormItem>
         <FormItem label="商品类型" hasFeedback {...formItemLayout}>
             {getFieldDecorator('type', {
@@ -235,7 +267,12 @@ const Edit = ({
         <FormItem label="名称" hasFeedback {...formItemLayout}>
             {getFieldDecorator('name', {
               initialValue: item.name,
-              rules: [],
+              rules: [
+                {
+                  required: true,
+                  message: '请填写商品名称',
+                },
+              ],
             })(<Input />)}
         </FormItem>
         <FormItem label="图片" hasFeedback {...formItemLayout}>
@@ -252,6 +289,16 @@ const Edit = ({
                 uploadKey={upload.key}
               />
             )}
+        </FormItem>
+        <FormItem label="商品品牌" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('brandId', {
+              initialValue: `${item.brandId ? item.brandId : ''}`,
+              rules: [],
+            })(<Select
+              placeholder="请选择品牌"
+            >
+              {brands.map(d => <Option key={d.id}>{d.name}</Option>)}
+            </Select>)}
         </FormItem>
         <FormItem label="标签" hasFeedback {...formItemLayout}>
             {getFieldDecorator('tags', {
@@ -276,6 +323,7 @@ const Edit = ({
               <InputNumber
                 min={0}
                 precision={2}
+                disabled={flag}
               />
             )}
         </FormItem>
@@ -287,6 +335,7 @@ const Edit = ({
               <InputNumber
                 min={0}
                 precision={0}
+                disabled={flag}
               />
             )}
         </FormItem>
@@ -307,6 +356,20 @@ const Edit = ({
               />
             )}
         </FormItem>
+        <Row>
+          <Col span={4} offset={6}>
+            规格
+          </Col>
+          <Col span={6} offset={2}>
+            价格
+          </Col>
+          <Col span={4}>
+            库存
+          </Col>
+          <Col span={2}>
+            删除
+          </Col>
+        </Row>
         {skuList}
         <FormItem {...formItemLayoutWithOutLabel}>
           <Button type="dashed" onClick={addSku} style={{ width: '60%' }}>

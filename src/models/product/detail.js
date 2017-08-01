@@ -1,6 +1,6 @@
 import pathToRegexp from 'path-to-regexp'
 import { routerRedux } from 'dva/router'
-import { get, create, update, queryBrands } from '../../services/product'
+import { get, create, update, queryBrands, queryCategories } from '../../services/product'
 import { getUpToken } from '../../services/app'
 import _ from 'lodash'
 
@@ -11,6 +11,7 @@ export default {
   state: {
     item: {},
     brands: [],
+    categories: [],
     upload: {
       files: [],
       token: '',
@@ -42,7 +43,29 @@ export default {
     *query ({
       payload,
     }, { call, put }) {
-      const data = yield call(get, payload)
+      let data = yield call(queryBrands)
+      if (data.success) {
+        yield put({
+          type: 'brandsAndClearItem',
+          payload: {
+            brands: data.data,
+          },
+        })
+      } else {
+        throw data
+      }
+      data = yield call(queryCategories)
+      if (data.success) {
+        yield put({
+          type: 'categoriesAndClearItem',
+          payload: {
+            categories: data.data,
+          },
+        })
+      } else {
+        throw data
+      }
+      data = yield call(get, payload)
       const { success, message, status, ...other } = data
       if (success) {
         yield put({
@@ -58,12 +81,23 @@ export default {
     *preparForCreate ({
       payload,
     }, { call, put }) {
-      const data = yield call(queryBrands)
+      let data = yield call(queryBrands)
       if (data.success) {
         yield put({
           type: 'brandsAndClearItem',
           payload: {
             brands: data.data,
+          },
+        })
+      } else {
+        throw data
+      }
+      data = yield call(queryCategories)
+      if (data.success) {
+        yield put({
+          type: 'categoriesAndClearItem',
+          payload: {
+            categories: data.data,
           },
         })
       } else {
@@ -143,6 +177,14 @@ export default {
         ...state,
         item: {},
         brands,
+      }
+    },
+    categoriesAndClearItem (state, { payload }) {
+      const { categories } = payload
+      return {
+        ...state,
+        item: {},
+        categories,
       }
     },
     removePic (state, { picKey }) {
