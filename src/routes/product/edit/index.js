@@ -2,7 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
-import { QINIU_IMG_HOST } from '../../../utils/config'
+import LzEditor from 'react-lz-editor'
+import { QINIU_IMG_HOST, baseURL } from '../../../utils/config'
 import QiniuPicturesWall from '../../../components/Uploader/QiniuPicturesWall'
 import _ from 'lodash'
 import styles from './index.less'
@@ -213,6 +214,22 @@ const Edit = ({
       skus: nextSkus,
     })
   }
+  const getDescValue = (description) => {
+    setFieldsValue({ description })
+  }
+  const uploadConfig = {
+    QINIU_URL: 'http://upload-z2.qiniu.com', // 上传地址，现在暂只支持七牛上传
+    QINIU_IMG_TOKEN_URL: `${baseURL}/qiniu/uptoken`, // 请求图片的token
+    QINIU_KEY_PREFIX: 'product',
+    QINIU_PFOP: {
+      url: 'http://upload-z2.qiniu.com', // 七牛持久保存请求地址
+    },
+    QINIU_VIDEO_TOKEN_URL: `${baseURL}/qiniu/uptoken`, // 请求媒体资源的token
+    QINIU_FILE_TOKEN_URL: `${baseURL}/qiniu/uptoken`, // 其他资源的token的获取
+    QINIU_DOMAIN_IMG_URL: `${QINIU_IMG_HOST}`, // 图片文件地址的前缀
+    QINIU_DOMAIN_VIDEO_URL: `${QINIU_IMG_HOST}`, // 视频文件地址的前缀
+    QINIU_DOMAIN_FILE_URL: `${QINIU_IMG_HOST}`, // 其他文件地址前缀
+  }
   return (
     <div className="content-inner">
       <Form layout="horizontal">
@@ -340,11 +357,23 @@ const Edit = ({
             )}
         </FormItem>
         <FormItem label="描述" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('description', {
+            {getFieldDecorator('rdescription', {
               initialValue: item.description,
+              valuePropName: 'importContent',
               rules: [],
-            })(<Input type="textarea" rows={4} />)}
+            })(
+              <LzEditor
+                active={true}
+                cbReceiver={(c) => setFieldsValue({ description: c })}
+                uploadConfig={uploadConfig}
+                uploadProps={undefined}
+              />
+            )}
         </FormItem>
+        {getFieldDecorator('description', {
+          initialValue: item.description,
+          rules: [],
+        })(<Input type="hidden" />)}
         <FormItem label="运费" hasFeedback {...formItemLayout}>
             {getFieldDecorator('freightage', {
               initialValue: item.freightage,
