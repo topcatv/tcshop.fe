@@ -34,7 +34,7 @@ const Edit = ({
     setFieldsValue,
   },
 }) => {
-  const { item, upload, categories, brands } = productDetail
+  const { item, categories, brands } = productDetail
 
   function handleOk () {
     validateFields((errors) => {
@@ -46,7 +46,6 @@ const Edit = ({
         id: item.id,
       }
       data.tags = _.join(data.tags, ',')
-      data.pics = _.join(_.map(data.pics, (pic) => { return pic.uid }), ',')
       if (data.id) {
         dispatch({
           type: 'productDetail/update',
@@ -72,20 +71,6 @@ const Edit = ({
         dispatch(routerRedux.goBack())
       },
     })
-  }
-
-  const handleChange = (info) => {
-    if (info.fileList.length > 0 && _.every(info.fileList, ['status', 'done'])) {
-      dispatch({
-        type: 'productDetail/picShow',
-        payload: {
-          ns: 'product',
-          pics: _.map(info.fileList, (f) => {
-            return f.response ? f.response.key : f.uid
-          }),
-        },
-      })
-    }
   }
 
   const fileList = []
@@ -214,9 +199,7 @@ const Edit = ({
       skus: nextSkus,
     })
   }
-  const getDescValue = (description) => {
-    setFieldsValue({ description })
-  }
+
   const uploadConfig = {
     QINIU_URL: 'http://upload-z2.qiniu.com', // 上传地址，现在暂只支持七牛上传
     QINIU_IMG_TOKEN_URL: `${baseURL}/qiniu/uptoken`, // 请求图片的token
@@ -229,6 +212,20 @@ const Edit = ({
     QINIU_DOMAIN_IMG_URL: `${QINIU_IMG_HOST}`, // 图片文件地址的前缀
     QINIU_DOMAIN_VIDEO_URL: `${QINIU_IMG_HOST}`, // 视频文件地址的前缀
     QINIU_DOMAIN_FILE_URL: `${QINIU_IMG_HOST}`, // 其他文件地址前缀
+    handleChange: (info) => {
+      if (info.fileList.length === 0) {
+        setFieldsValue({
+          pics: '',
+        })
+      }
+      if (info.fileList.length > 0 && _.every(info.fileList, ['status', 'done'])) {
+        setFieldsValue({
+          pics: _.join(_.map(info.fileList, (f) => {
+            return f.response ? f.response.key : f.uid
+          }), ','),
+        })
+      }
+    },
   }
   return (
     <div className="content-inner">
@@ -293,7 +290,7 @@ const Edit = ({
             })(<Input />)}
         </FormItem>
         <FormItem label="图片" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('pics', {
+            {getFieldDecorator('rpics', {
               initialValue: fileList,
               valuePropName: 'fileList',
               rules: [],
@@ -301,12 +298,14 @@ const Edit = ({
               <QiniuPicturesWall
                 imageType="image/jpeg"
                 uploadLimit={2}
-                handleChange={handleChange}
-                token={upload.token}
-                uploadKey={upload.key}
+                uploadConfig={uploadConfig}
               />
             )}
         </FormItem>
+        {getFieldDecorator('pics', {
+          initialValue: item.pics,
+          rules: [],
+        })(<Input type="hidden" />)}
         <FormItem label="商品品牌" hasFeedback {...formItemLayout}>
             {getFieldDecorator('brandId', {
               initialValue: `${item.brandId ? item.brandId : ''}`,

@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { PRO_URL, PRO_QINIU, PRO_COMMON } from 'react-lz-editor/global/supports/publicDatas'
 import styles from './QiniuPicturesWall.less'
 import _ from 'lodash'
 import { Upload, Icon, Modal, message } from 'antd'
@@ -9,10 +10,13 @@ class QiniuPicturesWall extends React.Component {
     previewVisible: false,
     previewImage: '',
     fileList: this.props.fileList,
+    qiniu: {
+      token: this.props.uploadConfig && Object.keys(this.props.uploadConfig).length ? PRO_QINIU.checkQiniu.returnToken(this.props.uploadConfig) : null,
+    },
   }
 
   componentWillReceiveProps = (nextProps) => {
-    if (_.differenceWith(nextProps.fileList, this.props.fileList, (value, other) => { return value.url === other.url }).length > 0) {
+    if (nextProps.fileList.length !== this.props.fileList.length || _.differenceWith(nextProps.fileList, this.props.fileList, (value, other) => { return value.url === other.url }).length > 0) {
       this.setState({ fileList: nextProps.fileList })
     }
   }
@@ -46,7 +50,7 @@ class QiniuPicturesWall extends React.Component {
   }
 
   render () {
-    const { token, uploadKey, handleChange } = this.props
+    const { handleChange } = this.props.uploadConfig
     const { previewVisible, previewImage } = this.state
     const uploadButton = (
       <div>
@@ -54,12 +58,22 @@ class QiniuPicturesWall extends React.Component {
         <div className={styles['ant-upload-text']}>上传</div>
       </div>
     )
+    let that = this
     const uploadProp = {
       name: 'file',
-      action: 'http://upload-z2.qiniu.com',
-      data: {
-        token,
-        key: uploadKey,
+      action: PRO_URL.QINIU_URL || this.props.uploadConfig.QINIU_URL,
+      data: (file) => { // 支持自定义保存文件名、扩展名支持
+        let token = that.state.qiniu.token
+        let key = ''
+        if (!token) {
+          token = PRO_QINIU.checkQiniu.returnToken(this.props.uploadConfig)
+        }
+        /* eslint new-cap: "off" */
+        key = `${PRO_COMMON.String.RndNum(20)}.${PRO_COMMON.String.GetFileExtensionName(file.name)[0]}`
+        if (this.props.uploadConfig.QINIU_KEY_PREFIX) {
+          key = `${this.props.uploadConfig.QINIU_KEY_PREFIX}/${key}`
+        }
+        return { token, key }
       },
       beforeUpload: this.beforeUpload,
       onChange: (fl) => {
@@ -87,12 +101,23 @@ class QiniuPicturesWall extends React.Component {
 
 QiniuPicturesWall.propTypes = {
   uploadLimit: PropTypes.number,
-  token: PropTypes.string,
-  uploadKey: PropTypes.string,
   imageType: PropTypes.string,
   fileList: PropTypes.array,
-  handleChange: PropTypes.func,
   fileCount: PropTypes.number,
+  uploadConfig: PropTypes.shape({
+    QINIU_URL: PropTypes.string.isRequired,
+    QINIU_IMG_TOKEN_URL: PropTypes.string.isRequired,
+    QINIU_KEY_PREFIX: PropTypes.string,
+    QINIU_PFOP: PropTypes.shape({
+      url: PropTypes.string.isRequired,
+    }),
+    QINIU_VIDEO_TOKEN_URL: PropTypes.string.isRequired,
+    QINIU_FILE_TOKEN_URL: PropTypes.string.isRequired,
+    QINIU_DOMAIN_IMG_URL: PropTypes.string.isRequired,
+    QINIU_DOMAIN_VIDEO_URL: PropTypes.string.isRequired,
+    QINIU_DOMAIN_FILE_URL: PropTypes.string.isRequired,
+    handleChange: PropTypes.func,
+  }),
 }
 
 export default QiniuPicturesWall

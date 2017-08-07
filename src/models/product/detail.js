@@ -1,7 +1,6 @@
 import pathToRegexp from 'path-to-regexp'
 import { routerRedux } from 'dva/router'
 import { get, create, update, queryBrands, queryCategories } from '../../services/product'
-import { getUpToken } from '../../services/app'
 import _ from 'lodash'
 
 export default {
@@ -34,7 +33,6 @@ export default {
         if (match) {
           dispatch({ type: 'query', payload: { id: match[1] } })
         }
-        dispatch({ type: 'getUpToken', payload: { ns: 'product' } })
       })
     },
   },
@@ -122,40 +120,6 @@ export default {
         throw data
       }
     },
-    *getUpToken ({ payload }, { call, put }) {
-      const data = yield call(getUpToken, payload)
-      if (data.success) {
-        yield put({
-          type: 'setUpToken',
-          payload: {
-            token: data.data,
-            key: data.uploadKey,
-          },
-        })
-      } else {
-        throw data
-      }
-    },
-    *picShow ({ payload }, { call, put }) {
-      const data = yield call(getUpToken, payload)
-      if (data.success) {
-        yield put({
-          type: 'setPics',
-          payload: {
-            pics: payload.pics,
-          },
-        })
-        yield put({
-          type: 'setUpToken',
-          payload: {
-            token: data.data,
-            key: data.uploadKey,
-          },
-        })
-      } else {
-        throw data
-      }
-    },
   },
 
   reducers: {
@@ -197,21 +161,6 @@ export default {
         item: {
           ...state.item,
           pics: _.join(pics, ','),
-        },
-      }
-    },
-    setUpToken (state, { payload }) {
-      return {
-        ...state,
-        upload: payload,
-      }
-    },
-    setPics (state, { payload }) {
-      return {
-        ...state,
-        item: {
-          ...state.item,
-          pics: _.join(payload.pics, ','),
         },
       }
     },

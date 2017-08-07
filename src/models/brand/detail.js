@@ -1,7 +1,6 @@
 import pathToRegexp from 'path-to-regexp'
 import { routerRedux } from 'dva/router'
 import { get, create, update } from '../../services/brand'
-import { getUpToken } from '../../services/app'
 
 export default {
 
@@ -31,7 +30,6 @@ export default {
         if (match) {
           dispatch({ type: 'query', payload: { id: match[1] } })
         }
-        dispatch({ type: 'getUpToken', payload: { ns: 'brand' } })
       })
     },
   },
@@ -79,20 +77,6 @@ export default {
         throw data
       }
     },
-    *getUpToken ({ payload }, { call, put }) {
-      const data = yield call(getUpToken, payload)
-      if (data.success) {
-        yield put({
-          type: 'setUpToken',
-          payload: {
-            token: data.data,
-            key: data.uploadKey,
-          },
-        })
-      } else {
-        throw data
-      }
-    },
   },
 
   reducers: {
@@ -107,21 +91,6 @@ export default {
       return {
         ...state,
         item: {},
-      }
-    },
-    setUpToken (state, { payload }) {
-      return {
-        ...state,
-        upload: payload,
-      }
-    },
-    setLogo (state, { payload }) {
-      return {
-        ...state,
-        item: {
-          ...state.item,
-          logo: payload.logo,
-        },
       }
     },
   },

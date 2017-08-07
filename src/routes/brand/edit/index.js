@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
-import { QINIU_IMG_HOST } from '../../../utils/config'
+import { QINIU_IMG_HOST, baseURL } from '../../../utils/config'
 import { connect } from 'dva'
+import _ from 'lodash'
 import QiniuPicturesWall from '../../../components/Uploader/QiniuPicturesWall'
 import { Form, Input, InputNumber, Row, Col, Button, Modal } from 'antd'
 
@@ -25,9 +26,10 @@ const Edit = ({
     getFieldDecorator,
     validateFields,
     getFieldsValue,
+    setFieldsValue,
   },
 }) => {
-  const { item, upload } = brandDetail
+  const { item } = brandDetail
 
   function handleOk () {
     validateFields((errors) => {
@@ -38,7 +40,6 @@ const Edit = ({
         ...getFieldsValue(),
         id: item.id,
       }
-      data.logo = data.logo[0].uid
       if (data.id) {
         dispatch({
           type: 'brandDetail/update',
@@ -66,17 +67,6 @@ const Edit = ({
     })
   }
 
-  let handleChange = (info) => {
-    if (info.file.status === 'done') {
-      dispatch({
-        type: 'brandDetail/setLogo',
-        payload: {
-          logo: info.file.response.key,
-        },
-      })
-    }
-  }
-
   const fileList = []
 
   if (item.logo) {
@@ -86,6 +76,28 @@ const Edit = ({
       status: 'done',
       url: `${QINIU_IMG_HOST}/${item.logo}_detail`,
     })
+  }
+
+  const uploadConfig = {
+    QINIU_URL: 'http://upload-z2.qiniu.com', // 上传地址，现在暂只支持七牛上传
+    QINIU_IMG_TOKEN_URL: `${baseURL}/qiniu/uptoken`, // 请求图片的token
+    QINIU_KEY_PREFIX: 'brand',
+    QINIU_PFOP: {
+      url: 'http://upload-z2.qiniu.com', // 七牛持久保存请求地址
+    },
+    QINIU_VIDEO_TOKEN_URL: `${baseURL}/qiniu/uptoken`, // 请求媒体资源的token
+    QINIU_FILE_TOKEN_URL: `${baseURL}/qiniu/uptoken`, // 其他资源的token的获取
+    QINIU_DOMAIN_IMG_URL: `${QINIU_IMG_HOST}`, // 图片文件地址的前缀
+    QINIU_DOMAIN_VIDEO_URL: `${QINIU_IMG_HOST}`, // 视频文件地址的前缀
+    QINIU_DOMAIN_FILE_URL: `${QINIU_IMG_HOST}`, // 其他文件地址前缀
+    handleChange: (info) => {
+      setFieldsValue({ logo: '' })
+      if (info.file.status === 'done') {
+        setFieldsValue({
+          logo: info.file.response.key,
+        })
+      }
+    },
   }
 
   return (
@@ -103,7 +115,7 @@ const Edit = ({
           })(<Input />)}
         </FormItem>
         <FormItem label="品牌logo" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('logo', {
+          {getFieldDecorator('rlogo', {
             initialValue: fileList,
             valuePropName: 'fileList',
             rules: [],
@@ -111,13 +123,15 @@ const Edit = ({
             <QiniuPicturesWall
               imageType="image/jpeg"
               uploadLimit={2}
-              handleChange={handleChange}
-              token={upload.token}
-              uploadKey={upload.key}
+              uploadConfig={uploadConfig}
               fileCount={1}
             />
           )}
         </FormItem>
+        {getFieldDecorator('logo', {
+          initialValue: item.logo,
+          rules: [],
+        })(<Input type="hidden" />)}
         <FormItem label="显示位置" hasFeedback {...formItemLayout}>
           {getFieldDecorator('position', {
             initialValue: item.position,
